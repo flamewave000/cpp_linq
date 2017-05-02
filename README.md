@@ -7,57 +7,142 @@ The array class contains various manipulation methods which may either mutate th
 
 ## Macros
 The library contains a set of macros which can be used to create cleaner and more readable LINQ statements. These macros are completely optional and are disabled by default. To enable them, ensure to define the preproc `LINQ_USE_MACROS` before including the `linq.h` header.
-
 > Example
 > ```c++
 > #define LINQ_USE_MACROS
 > #include "linq.h"
 > ```
 
+_Note: All macro linq statements must be terminated with the_ `END` _macro._
+
 ## Examples
 
-### Array filtering
-_Standard_
-```c++
-int nums[10] = {1,2,3,4,5,6,7,8,9,10};
-auto odds = linq::from(nums, 10)
-    .where([](auto item) { return item % 2; });
-```
-_Macros_
-```c++
-int nums[10] = {1,2,3,4,5,6,7,8,9,10};
-auto odds = FROM(nums, 10)
-            WHERE { return item % 2; }
-            END;
-```
+### Array Creation
+`linq::array` can be created by using either a `std::vector` or c-style array. This is done by doing the following:
+> _Standard_
+> ```c++
+> std::vector<int> vec_nums = {1,2,3};
+> auto array_nums = linq::from(vec_nums);
+> 
+> int c_nums[3] = {1,2,3};
+> auto array_nums = linq::from(c_nums, 3);
+> ```
+> _Macros_
+> ```c++
+> std::vector<int> vec_nums = {1,2,3};
+> auto array_nums = FROM (vec_nums);
+> 
+> int c_nums[3] = {1,2,3};
+> auto array_nums = FROM (c_nums, 3);
+> ```
+
+### Array Filtering
+A `linq::array` can be filtered using the `where|WHERE` method/macro. This allows a developer to filter the array for only elements that pass a defined condition.
+> _Standard_
+> ```c++
+> int nums[10] = {1,2,3,4,5,6,7,8,9,10};
+> auto odds = linq::from(nums, 10)
+>     .where([](int item) { return item % 2; });
+> ```
+> _Macros_
+> ```c++
+> int nums[10] = {1,2,3,4,5,6,7,8,9,10};
+> auto odds = FROM (nums, 10)
+>             WHERE { return item % 2; }
+>             END;
+> ```
 
 ### Sorting
 Lists can be sorted using the `orderby` method or `ORDERBY` macro. If the array contains basic data types, or complex types that have the `>` or `<` comparison operators overloaded, `orderby` can be given the global `linq::ascending|ASCENDING` or `linq::descending|DESCENDING` predicates. Otherwise, a custom predicate must be provided in the form of a lambda or complex object with the `()` operator overloaded.
 
 The callable predicate must be of the form:\
 `bool (<type> [left_elem], <type> [right_elem])`
+> _Standard_
+> ```c++
+> int nums[10] = {1,2,3,4,5,6,7,8,9,10};
+> auto odds = linq::from(nums, 10)
+>     .where([](int item) { return item % 2; })
+>     .orderby(linq::descending);
+> ```
+> _Macros_
+> ```c++
+> int nums[10] = {1,2,3,4,5,6,7,8,9,10};
+> auto odds = FROM (nums, 10)
+>             WHERE { return item % 2; }
+>             ORDERBY (DESCENDING)
+>             END;
+> ```
 
-_Standard_
-```c++
-int nums[10] = {1,2,3,4,5,6,7,8,9,10};
-auto odds = linq::from(nums, 10)
-    .where([](auto item) { return item % 2; })
-    .orderby(linq::descending);
-```
-_Macros_
-```c++
-int nums[10] = {1,2,3,4,5,6,7,8,9,10};
-auto odds = FROM(nums, 10)
-            WHERE { return item % 2; }
-            ORDERBY(DESCENDING)
-            END;
-```
+### Selecting
+Selection allows the developer to transform each element into a new type. This type must be the same for all new elements and must be defined before use. This creates a new `linq::array` containing the new elements created within the lambda expression.
+
+> _Standard_
+> ```c++
+> int nums[10] = {1,2,3,4,5,6,7,8,9,10};
+> auto text_nums = linq::from(nums, 10)
+>     .select<std::string>([](int item)->std::string {
+>         return int2string(elem);
+>     });
+> ```
+> _Macros_
+> ```c++
+> int nums[10] = {1,2,3,4,5,6,7,8,9,10};
+> auto text_nums =
+>     FROM (nums, 10)
+>     SELECT (std::string) { return int2string(item); }
+>     END;
+> ```
 
 ### Joining
+The more complex procedure provided by the linq library, joining is performed on two separate lists. This process compares each element in the first list against each element in the second list. Joining has to stages, the first stage is comparision, where elements from both lists are paired based on the provided comparision condition. the second stage is an optional "merge". If the merge stage is not defined, the result will be a `linq::array<merge_pair<`_`type_a`_`, `_`type_b`_`>>`.
 
+#### Pair Join
+> _Standard_
+> ```c++
+> std::vector<int> ints = {1,2,3,4,6};
+> std::vector<float> floats = {1.5,2.5,3.5,4.5,6.5};
+> linq::array<merge_pair<int,float>> pairs = linq::from(ints)
+>     .join<float>(floats,
+>         [](int left, float right) -> bool {
+>             return left == int(right);
+>         });
+> ```
+> _Macros_
+> ```c++
+> std::vector<int> ints = {1,2,3,4,6};
+> std::vector<float> floats = {1.5,2.5,3.5,4.5,6.5};
+> linq::array<merge_pair<int,float>> pairs =
+>     FROM (ints)
+>     PAIR_JOIN (float) floats
+>     ON { return left == int(right); }
+>     END;
+> ```
 
-#### Paired Join
-
-#### Merged Join
-
+#### Merge Join
+> _Standard_
+> ```c++
+> struct myPair { int whole, float half; };
+> std::vector<int> ints = {1,2,3,4,6};
+> std::vector<float> floats = {1.5,2.5,3.5,4.5,6.5};
+> linq::array<myPair> pairs = linq::from(ints)
+>     .join<float, myPair>(floats,,
+>         [](int left, float right) -> myPair {
+>             return { left, right };
+>         }
+>         [](int left, float right) -> bool {
+>             return left == int(right);
+>         });
+> ```
+> _Macros_
+> ```c++
+> struct myPair { int whole, float half; };
+> std::vector<int> ints = {1,2,3,4,6};
+> std::vector<float> floats = {1.5,2.5,3.5,4.5,6.5};
+> linq::array<myPair> pairs =
+>     FROM (ints)
+>     MERGE_JOIN (float,myPair) floats
+>     INTO (myPair) { return { left, right }; }
+>     ON { return left == int(right); }
+>     END;
+> ```
 
