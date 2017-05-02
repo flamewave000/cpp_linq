@@ -31,7 +31,7 @@ int main() {
 		END;
 	// Second method of joining using the JOIN to get an array of pairs and then using SELECT to construct the new array
 	empProjs = FROM(employees, 3)
-		JOIN(Project) projects
+		PAIR_JOIN(Project) projects
 		ON { return left.proj_id == right.id; } // left/right condition
 		SELECT(EmployeeProject) { return { { item.left.id, item.left.name }, item.right.name }; }
 		END;

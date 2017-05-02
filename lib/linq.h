@@ -282,7 +282,7 @@ namespace linq {
 /// <summary>Performs a join on the current list and the provided list. This results in an array of <see cref="linq::merge_pair"/>.</summary>
 /// <param name="type">The type contained within the list to be joined.</param>
 /// <example>JOIN(int) nums</example>
-#define JOIN(type) END.join<type>(
+#define PAIR_JOIN(type) END.join<type>(
 
 /// <summary>Performs a join on the current list and the provided list. Unlike <see cref="JOIN"/> it requires the <see cref="INTO"/> macro to create a merger of the two paired elements.</summary>
 /// <param name="type">The type contained within the list to be joined.</param>
