@@ -5,7 +5,8 @@ This library adds the `linq::array` type which extends from the `std::vector`. I
 
 The array class contains various manipulation methods which may either mutate the current `linq::array`, or create a new array, copying any pertinent values into it. The use of `const` denote which methods do not mutate the current `linq::array`, but rather create a new one as a result.
 
-_Note: Because `linq::array` inherits `std::vector`, it naturally assumes those iterator features and can be subsequently used within the c++11/c++14 for-each loop: `for(auto elem : <linq::array>) { }`_
+_Note: Because `linq::array` inherits `std::vector`, it naturally assumes those iterator features and can be subsequently used within the for-each loop:\
+`for(auto elem : <linq::array>) { }`_
 
 - [Macros](#macros-top)
 - [Examples](#examples-top)
