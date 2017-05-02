@@ -1,0 +1,5 @@
+CC=g++
+CSTD=c++14
+
+examplemake: main.cpp
+	$(CC) -std=$(CSTD) -o example main.cpp
