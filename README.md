@@ -16,8 +16,15 @@ The library contains a set of macros which can be used to create cleaner and mor
 _Note: All macro linq statements must be terminated with the_ `END` _macro._
 
 ## Examples
+- [Array Creation](#array-creation-top)
+- [Array Filtering](#array-filtering-top)
+- [Sorting](#sorting-top)
+- [Selecting](#selecting-top)
+- [Joining](#joining-top)
+    - [Pair Join](#pair-join-top)
+    - [Merge Join](#merge-join-top)
 
-### Array Creation
+### Array Creation [top](#examples)
 `linq::array` can be created by using either a `std::vector` or c-style array. This is done by doing the following:
 > _Standard_
 > ```c++
@@ -36,7 +43,7 @@ _Note: All macro linq statements must be terminated with the_ `END` _macro._
 > auto array_nums = FROM (c_nums, 3);
 > ```
 
-### Array Filtering
+### Array Filtering [top](#examples)
 A `linq::array` can be filtered using the `where|WHERE` method/macro. This allows a developer to filter the array for only elements that pass a defined condition.
 > _Standard_
 > ```c++
@@ -52,7 +59,7 @@ A `linq::array` can be filtered using the `where|WHERE` method/macro. This allow
 >             END;
 > ```
 
-### Sorting
+### Sorting [top](#examples)
 Lists can be sorted using the `orderby` method or `ORDERBY` macro. If the array contains basic data types, or complex types that have the `>` or `<` comparison operators overloaded, `orderby` can be given the global `linq::ascending|ASCENDING` or `linq::descending|DESCENDING` predicates. Otherwise, a custom predicate must be provided in the form of a lambda or complex object with the `()` operator overloaded.
 
 The callable predicate must be of the form:\
@@ -73,7 +80,7 @@ The callable predicate must be of the form:\
 >             END;
 > ```
 
-### Selecting
+### Selecting [top](#examples)
 Selection allows the developer to transform each element into a new type. This type must be the same for all new elements and must be defined before use. This creates a new `linq::array` containing the new elements created within the lambda expression.
 
 > _Standard_
@@ -93,10 +100,10 @@ Selection allows the developer to transform each element into a new type. This t
 >     END;
 > ```
 
-### Joining
+### Joining [top](#examples)
 The more complex procedure provided by the linq library, joining is performed on two separate lists. This process compares each element in the first list against each element in the second list. Joining has to stages, the first stage is comparision, where elements from both lists are paired based on the provided comparision condition. the second stage is an optional "merge". If the merge stage is not defined, the result will be a `linq::array<merge_pair<`_`type_a`_`, `_`type_b`_`>>`.
 
-#### Pair Join
+#### Pair Join [top](#examples)
 > _Standard_
 > ```c++
 > std::vector<int> ints = {1,2,3,4,6};
@@ -118,7 +125,7 @@ The more complex procedure provided by the linq library, joining is performed on
 >     END;
 > ```
 
-#### Merge Join
+#### Merge Join [top](#examples)
 > _Standard_
 > ```c++
 > struct myPair { int whole, float half; };
