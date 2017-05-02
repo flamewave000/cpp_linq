@@ -108,14 +108,14 @@ Selection allows the developer to transform each element into a new type. This t
 > ```
 
 ### Joining [examples](#examples-top)
-The more complex procedure provided by the linq library, joining is performed on two separate lists. This process compares each element in the first list against each element in the second list. Joining has to stages, the first stage is comparision, where elements from both lists are paired based on the provided comparision condition. the second stage is an optional "merge". If the merge stage is not defined, the result will be a `linq::array<merge_pair<`_`type_a`_`, `_`type_b`_`>>`.
+The more complex procedure provided by the linq library, joining is performed on two separate lists. This process compares each element in the first list against each element in the second list. Joining has to stages, the first stage is comparision, where elements from both lists are paired based on the provided comparision condition. the second stage is an optional "merge". If the merge stage is not defined, the result will be a `linq::array<linq::core::merge_pair<`_`type_a`_`, `_`type_b`_`>>`.
 
 #### Pair Join [examples](#examples-top)
 > _Standard_
 > ```c++
 > std::vector<int> ints = {1,2,3,4,6};
 > std::vector<float> floats = {1.5,2.5,3.5,4.5,6.5};
-> linq::array<merge_pair<int,float>> pairs = linq::from(ints)
+> linq::array<linq::core::merge_pair<int,float>> pairs = linq::from(ints)
 >     .join<float>(floats,
 >         [](int left, float right) -> bool {
 >             return left == int(right);
@@ -125,7 +125,7 @@ The more complex procedure provided by the linq library, joining is performed on
 > ```c++
 > std::vector<int> ints = {1,2,3,4,6};
 > std::vector<float> floats = {1.5,2.5,3.5,4.5,6.5};
-> linq::array<merge_pair<int,float>> pairs =
+> linq::array<linq::core::merge_pair<int,float>> pairs =
 >     FROM (ints)
 >     PAIR_JOIN (float) floats
 >     ON { return left == int(right); }
