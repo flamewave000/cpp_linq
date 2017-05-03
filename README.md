@@ -10,7 +10,7 @@ _Note: Because `linq::array` inherits `std::vector`, it naturally assumes those 
 
 - [Macros](#macros-top)
 - [Examples](#examples-top)
-- [Release Notes](#release-notes-top)
+- [Future Features](#future-features-top)
 
 ## Macros [top](#flame-linq)
 The library contains a set of macros which can be used to create cleaner and more readable LINQ statements. These macros are completely optional and are disabled by default. To enable them, ensure to define the preproc `LINQ_USE_MACROS` before including the `linq.h` header.
@@ -161,41 +161,22 @@ The more complex procedure provided by the linq library, joining is performed on
 >     END;
 > ```
 
-## Release Notes [top](#flame-linq)
+## Future Features [top](#flame-linq)
+&#x2714; Complete &#x25a2; Incomplete
 
-### v1.0
-Initial release, contains the MVP features of LINQ along with macro syntax for creating similarily verbose statements.
-- From clause for starting linq statements
-    - _`array`_` from(`_`c_arr`_`, `_`count`_`)`
-    - _`array`_` from(`_`vec`_`)`
-    - `FROM(`_`c_arr`_`, `_`count`_`)`
-    - `FROM(`_`vec`_`)`
-- Sorting
-    - _`array`_` orderby(`_`pred`_`)`
-    - `ORDERBY(`_`pred`_`)`
-    - `linq::ascending` | `ASCENDING`
-    - `linq::descending` | `DESCENDING`
-- Selecting
-    - `void select(`_`selector`_`, `_`result`_`) const`
-    - _`array`_` select(`_`selector`_`) const`
-    - `SELECT(`_`type`_`) { `_`type`_`(`**`item`**`) }`
-- Filtering
-    - _`array`_` where(`_`condition`_`) const`
-    - `WHERE { `_`condition`_`(`**`item`**`) }`
-- Joining
-    - _`array`_` join(`_`arr`_`, `_`merge`_`, `_`on`_`) const`
-    - _`array`_` join(`_`arr`_`, `_`on`_`) const`
-    - `PAIR_JOIN(`_`type`_`) `_`array`_` ON { `_`condition`_`(`**`left`**`, `**`right`**`) }`
-    - `MERGE_JOIN(`_`type`_`, `_`ret_type`_`) `_`array`_` INTO(`_`ret_type`_`) { `_`ret_type`_`(`**`left`**`, `**`right`**`) } ON { `_`condition`_`(`**`left`**`, `**`right`**`) }`
+### Features Planned for v1.0
 
-### Future features
-- [ ] _`type`_`first(`_`lambda`_`)`
-- [ ] _`type`_`first_or_default(`_`lambda`_`,`_`default`_`)`
-- [ ] _`type`_`last(`_`lambda`_`)`
-- [ ] _`type`_`last_or_default(`_`lambda`_`,`_`default`_`)`
-- [ ] _`type`_`max(`_`lambda`_`)`
-- [ ] _`type`_`min(`_`lambda`_`)`
-- [ ] `void reverse()`
-- [ ] `bool any()`
-- [ ] `bool any(`_`lambda`_`)`
-- [ ] `map<`_`key`_`,`_`type`_`> groupby<`_`key`_`>(`_`lambda`_`)`
+&#x25a2; _`type`_`first(`_`lambda`_`)`\
+&#x25a2; _`type`_`first_or_default(`_`lambda`_`,`_`default`_`)`\
+&#x25a2; _`type`_`last(`_`lambda`_`)`\
+&#x25a2; _`type`_`last_or_default(`_`lambda`_`,`_`default`_`)`\
+&#x25a2; Wiki documentation
+
+### Other Possible Features
+&#x25a2; _`type`_`min(`_`lambda`_`)`\
+&#x25a2; _`type`_`max(`_`lambda`_`)`\
+&#x25a2; `bool any()`\
+&#x25a2; `bool any(`_`lambda`_`)`\
+&#x25a2; `void reverse()`\
+&#x25a2; `map<`_`key`_`,`_`type`_`> groupby<`_`key`_`>(`_`lambda`_`)`\
+&#x25a2; Simple Website
