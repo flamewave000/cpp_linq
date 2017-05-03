@@ -10,7 +10,7 @@ _Note: Because `linq::array` inherits `std::vector`, it naturally assumes those 
 
 - [Macros](#macros-top)
 - [Examples](#examples-top)
-- [ToDo List](#todo-list-top)
+- [Release Notes](#release-notes-top)
 
 ## Macros [top](#flame-linq)
 The library contains a set of macros which can be used to create cleaner and more readable LINQ statements. These macros are completely optional and are disabled by default. To enable them, ensure to define the preproc `LINQ_USE_MACROS` before including the `linq.h` header.
@@ -115,7 +115,8 @@ The more complex procedure provided by the linq library, joining is performed on
 > ```c++
 > std::vector<int> ints = {1,2,3,4,6};
 > std::vector<float> floats = {1.5,2.5,3.5,4.5,6.5};
-> linq::array<linq::core::merge_pair<int,float>> pairs = linq::from(ints)
+> linq::array<linq::core::merge_pair<int,float>> pairs =
+>     linq::from(ints)
 >     .join<float>(floats,
 >         [](int left, float right) -> bool {
 >             return left == int(right);
@@ -160,8 +161,34 @@ The more complex procedure provided by the linq library, joining is performed on
 >     END;
 > ```
 
-## ToDo List [top](#flame-linq)
-### Methods to be added
+## Release Notes [top](#flame-linq)
+
+### v1.0
+Initial release, contains the MVP features of LINQ along with macro syntax for creating similarily verbose statements.
+- From clause for starting linq statements
+    - `linq::array<`_`type`_`> from(const`_`type`_`*c_arr, const size_t &count)`
+    - `linq::array<`_`type`_`> from(const std::vector<`_`type`_`>&vec)`
+    - `FROM(c_arr, count)`
+    - `FROM(vec)`
+- Sorting
+    - `linq::array<`_`type`_`>& orderby<_Pr>(const _Pr &pred)`
+    - `ORDERBY(pred)`
+    - `linq::ascending` | `ASCENDING`
+    - `linq::descending` | `DESCENDING`
+- Selecting
+    - `void select(const conversion<_Ret> &selector, array<_Ret> &result) const`
+    - `array<_Ret> select(const conversion<_Ret> &selector) const`
+    - `SELECT(`_`type`_`) { return `_`type`_`(`**`item`**`); }`
+- Filtering
+    - `array<`_`type`_`> where(const conditional &condition) const`
+    - `WHERE { return `_`condition(`_**`item`**_`)`_`; }`
+- Joining
+    - `linq::array<`_`ret_type`_`> join(const array<`_`type`_`> &arr, const merger<`_`type`_`, `_`ret_type`_`> &merge, const comparison<`_`type`_`> &on) const`
+    - `linq::array<core::merge_pair<`_`type_a`_`, `_`type_b`_`>> join(const array<`_`type_b`_`> &arr, const comparison<`_`type_b`_`> on) const`
+    - `PAIR_JOIN(`_`type`_`) `_`arr<type>`_` ON { return `_`condition(`_**`left`**_`, `_**`right`**_`)`_`; }`
+    - `MERGE_JOIN(`_`type`_`, `_`ret_type`_`) `_`arr<type>`_` INTO(`_`ret_type`_`) { return `_`ret_type(`_**`left`**_`, `_**`right`**_`); } ON { return `_`condition(`_**`left`**_`, `_**`right`**_`)`_`; }`
+
+### Future features
 - `<`_`type`_`> first(`_`lambda`_`)`
 - `<`_`type`_`> first_or_default(`_`lambda`_`,`_`default`_`)`
 - `<`_`type`_`> last(`_`lambda`_`)`

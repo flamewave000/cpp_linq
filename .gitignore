@@ -34,3 +34,5 @@ Debug/
 Release/
 *.sln
 
+# Other files/folders
+docs/

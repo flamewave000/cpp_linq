@@ -152,7 +152,7 @@ namespace linq {
 		/// </summary>
 		/// <param name="conditional">The lambda which determines if an item is to be added to the new list.</param>
 		/// <returns>The new list of filtered items.</returns>
-		array<_Ty> where(const conditional condition) const {
+		array<_Ty> where(const conditional &condition) const {
 			// Record of elements to keep
 			::std::vector<size_t> keep;
 			// Loop through elements to see which are being kept and which are to be thrown
@@ -185,7 +185,7 @@ namespace linq {
 		/// <typeparam name="_Pr">The type of the predicate object, method or lambda</typeparam>
 		/// <returns>A reference to this list (used for chaining calls).</returns>
 		template<class _Pr>
-		inline array<_Ty>& orderby(_Pr pred) {
+		inline array<_Ty>& orderby(const _Pr &pred) {
 			::std::sort(this->begin(), this->end(), pred);
 			return *this;
 		}
@@ -204,7 +204,7 @@ namespace linq {
 		/// <typeparam name="_Ret">The type to be returned in the new merged array.</typeparam>
 		/// <returns>New array of merged items.</returns>
 		template<class _Ty2, class _Ret>
-		array<_Ret> join(const array<_Ty2> &arr, const merger<_Ty2, _Ret> merge, const comparison<_Ty2> on) const {
+		array<_Ret> join(const array<_Ty2> &arr, const merger<_Ty2, _Ret> &merge, const comparison<_Ty2> &on) const {
 			array<_Ret> merged;
 			for (auto first : *this) {
 				for (auto second : arr) {
@@ -223,7 +223,7 @@ namespace linq {
 		/// <typeparam name="_Ty2">The type contained in the array being joined.</typeparam>
 		/// <returns>New array of paired items.</returns>
 		template<class _Ty2>
-		inline array<core::merge_pair<_Ty, _Ty2>> join(const array<_Ty2> &arr, const comparison<_Ty2> on) const {
+		inline array<core::merge_pair<_Ty, _Ty2>> join(const array<_Ty2> &arr, const comparison<_Ty2> &on) const {
 			return join<_Ty2, core::merge_pair<_Ty, _Ty2>>(arr, [](auto left, auto right)->core::merge_pair<_Ty, _Ty2> { return { left, right }; }, on);
 		}
 	};
