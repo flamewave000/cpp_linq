@@ -60,6 +60,21 @@
 /// <example>FROM(cArray, count)</example>
 #define FROM(param, ...) ::linq::from(param,##__VA_ARGS__
 
+/// <summary>
+/// Searches the array for the first item which satisfies the provided condition.
+/// Throws <see cref="std::logic_error"/> if the condition is never satisfied.
+/// </summary>
+/// <exception cref="std::logic_error">Thrown if no items satisfy the condition.</exception>
+/// <example>FROM(nums) FIRST { return item % 2; }</example>
+#define FIRST END.first([](auto item) -> bool
+/// <summary>
+/// Searches the array for the first item which satisfies the provided condition.
+/// Returns the provided <paramref name="defaultValue"/> if the condition is never satisfied.
+/// </summary>
+/// <param name="defaultValue">Default value to be returned if no items satisfy the condition.</param>
+/// <example>FROM(nums) FIRST_OR_DEFAULT(42) { return item % 2; }</example>
+#define FIRST_OR_DEFAULT(defaultValue) END.first_or_default(defaultValue, [](auto item) -> bool
+
 
 /*** Custom lambda expression alternatives ***/
 
@@ -74,15 +89,28 @@
 #define WHERE_L END.where(
 
 /// <summary>
-/// (Optional) Performs a conditional check between the left and right during either a <see cref="JOIN"/> or <see cref="MERGE_JOIN"/> using a fully defined lambda..
+/// Performs a conditional check between the left and right during either a <see cref="JOIN"/> or <see cref="MERGE_JOIN"/> using a fully defined lambda..
 /// Note: For <see cref="MERGE_JOIN"/>, must come after the <see cref="INTO"/> statement
 /// </summary>
 /// <example>JOIN(obj) myObjects ON_L [](auto left, auto right) -> bool { return left.ref_id == right.id; }</example>
 #define ON_L , 
 
 /// <summary>Used with <see cref="MERGE_JOIN"/> to define how the paired items are merged into a new type using a fully defined lambda.</summary>
-/// <param name="type">The type to be created from the merged items.</param>
 /// <example>MERGE_JOIN(int, myPair) nums INTO_L [](auto left, auto right) -> myPair { return { left, right }; }</example>
-#define INTO_L(type) , 
+#define INTO_L , 
 
+/// <summary>
+/// Searches the array for the first item which satisfies the provided condition.
+/// Throws <see cref="std::logic_error"/> if the condition is never satisfied.
+/// </summary>
+/// <exception cref="std::logic_error">Thrown if no items satisfy the condition.</exception>
+/// <example>FROM(nums) FIRST [](auto item) -> bool { return item % 2; }</example>
+#define FIRST_L END.first(
+/// <summary>
+/// Searches the array for the first item which satisfies the provided fully defined lambda condition.
+/// Returns the provided <paramref name="defaultValue"/> if the condition is never satisfied.
+/// </summary>
+/// <param name="defaultValue">Default value to be returned if no items satisfy the fully defined lambda condition.</param>
+/// <example>FROM(nums) FIRST_OR_DEFAULT(42) [](auto item) -> bool { return item % 2; }</example>
+#define FIRST_OR_DEFAULT_L(defaultValue) END.first_or_default(defaultValue,
 #endif

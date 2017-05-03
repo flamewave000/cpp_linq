@@ -17,6 +17,14 @@ int main() {
 	auto even_descs = FROM(evens) SELECT(description) { return { item, "even" }; } END;
 	auto odd_descs = FROM(odds) SELECT(description) { return { item, "odd" }; } END;
 
+	// Find the first even number
+	int test = linq::from(nums, 10).first([](int item) { return (item % 2) == 0; });
+	// Find the number equal to 11 (will fail and return default)
+	test = linq::from(nums, 10).first_or_default(0, [](int item) { return item == 11; });
+	// Macro version of finding first even number
+	test = FROM(nums, 10) FIRST { return (item % 2) == 0; } END;
+	// Macro version of finding the number equal to 11 (will fail and return default)
+	test = FROM(nums, 10) FIRST_OR_DEFAULT(0) { return item == 11; } END;
 
 	typedef struct { int id, proj_id; string name; } Employee;
 	typedef struct { int id; string name; } Project;

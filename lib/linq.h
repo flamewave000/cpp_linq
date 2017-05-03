@@ -19,6 +19,8 @@
 #endif
 #endif
 
+#include <exception>
+#include <stdexcept>
 
 namespace linq {
 	namespace core {
@@ -190,10 +192,6 @@ namespace linq {
 			return *this;
 		}
 
-		/// <summary>Performs a join on the current list and the provided list. Unlike <see cref="JOIN"/> it requires the <see cref="INTO"/> macro to create a merger of the two paired elements.</summary>
-		/// <param name="type">The type contained within the list to be joined.</param>
-		/// <param name="merge_type">The new type to be created for each joined pair</param>
-
 		/// <summary>
 		/// Performs a join on the current list and the provided list and performs a merge of the paired items.
 		/// </summary>
@@ -225,6 +223,34 @@ namespace linq {
 		template<class _Ty2>
 		inline array<core::merge_pair<_Ty, _Ty2>> join(const array<_Ty2> &arr, const comparison<_Ty2> &on) const {
 			return join<_Ty2, core::merge_pair<_Ty, _Ty2>>(arr, [](auto left, auto right)->core::merge_pair<_Ty, _Ty2> { return { left, right }; }, on);
+		}
+
+		/// <summary>
+		/// Searches the array for the first item which satisfies the provided condition.
+		/// Throws <see cref="std::logic_error"/> if the condition is never satisfied.
+		/// </summary>
+		/// <param name="condition">Condition to be satisfied.</param>
+		/// <exception cref="std::logic_error">Thrown if no items satisfy the condition.</exception>
+		/// <returns>The first item found which satisfies the condition; otherwise an error is thrown.</returns>
+		_Ty first(const conditional &condition) const {
+			for (auto elem : (*this)) {
+				if (condition(elem)) {
+					return elem;
+				}
+			}
+			throw ::std::logic_error("no elements match the given conditional");
+		}
+
+		/// <summary>
+		/// Searches the array for the first item which satisfies the provided condition.
+		/// Returns the provided <paramref name="defaultValue"/> if the condition is never satisfied.
+		/// </summary>
+		/// <param name="condition">Condition to be satisfied.</param>
+		/// <param name="defaultValue">Default value to be returned if no items satisfy the condition.</param>
+		/// <returns>The first item found which satisfies the condition; otherwise the provided <paramref name="defaultValue"/>.</returns>
+		inline _Ty first_or_default(const _Ty &defaultValue, const conditional &condition) const {
+			try { return first(condition); }
+			catch (...) { return defaultValue; }
 		}
 	};
 
