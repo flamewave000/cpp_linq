@@ -166,36 +166,36 @@ The more complex procedure provided by the linq library, joining is performed on
 ### v1.0
 Initial release, contains the MVP features of LINQ along with macro syntax for creating similarily verbose statements.
 - From clause for starting linq statements
-    - `linq::array<`_`type`_`> from(const`_`type`_`*c_arr, const size_t &count)`
-    - `linq::array<`_`type`_`> from(const std::vector<`_`type`_`>&vec)`
-    - `FROM(c_arr, count)`
-    - `FROM(vec)`
+    - _`array`_` from(`_`c_arr`_`, `_`count`_`)`
+    - _`array`_` from(`_`vec`_`)`
+    - `FROM(`_`c_arr`_`, `_`count`_`)`
+    - `FROM(`_`vec`_`)`
 - Sorting
-    - `linq::array<`_`type`_`>& orderby<_Pr>(const _Pr &pred)`
-    - `ORDERBY(pred)`
+    - _`array`_` orderby(`_`pred`_`)`
+    - `ORDERBY(`_`pred`_`)`
     - `linq::ascending` | `ASCENDING`
     - `linq::descending` | `DESCENDING`
 - Selecting
-    - `void select(const conversion<_Ret> &selector, array<_Ret> &result) const`
-    - `array<_Ret> select(const conversion<_Ret> &selector) const`
-    - `SELECT(`_`type`_`) { return `_`type`_`(`**`item`**`); }`
+    - `void select(`_`selector`_`, `_`result`_`) const`
+    - _`array`_` select(`_`selector`_`) const`
+    - `SELECT(`_`type`_`) { `_`type`_`(`**`item`**`) }`
 - Filtering
-    - `array<`_`type`_`> where(const conditional &condition) const`
-    - `WHERE { return `_`condition(`_**`item`**_`)`_`; }`
+    - _`array`_` where(`_`condition`_`) const`
+    - `WHERE { `_`condition`_`(`**`item`**`) }`
 - Joining
-    - `linq::array<`_`ret_type`_`> join(const array<`_`type`_`> &arr, const merger<`_`type`_`, `_`ret_type`_`> &merge, const comparison<`_`type`_`> &on) const`
-    - `linq::array<core::merge_pair<`_`type_a`_`, `_`type_b`_`>> join(const array<`_`type_b`_`> &arr, const comparison<`_`type_b`_`> on) const`
-    - `PAIR_JOIN(`_`type`_`) `_`arr<type>`_` ON { return `_`condition(`_**`left`**_`, `_**`right`**_`)`_`; }`
-    - `MERGE_JOIN(`_`type`_`, `_`ret_type`_`) `_`arr<type>`_` INTO(`_`ret_type`_`) { return `_`ret_type(`_**`left`**_`, `_**`right`**_`); } ON { return `_`condition(`_**`left`**_`, `_**`right`**_`)`_`; }`
+    - _`array`_` join(`_`arr`_`, `_`merge`_`, `_`on`_`) const`
+    - _`array`_` join(`_`arr`_`, `_`on`_`) const`
+    - `PAIR_JOIN(`_`type`_`) `_`array`_` ON { `_`condition`_`(`**`left`**`, `**`right`**`) }`
+    - `MERGE_JOIN(`_`type`_`, `_`ret_type`_`) `_`array`_` INTO(`_`ret_type`_`) { `_`ret_type`_`(`**`left`**`, `**`right`**`) } ON { `_`condition`_`(`**`left`**`, `**`right`**`) }`
 
 ### Future features
-- `<`_`type`_`> first(`_`lambda`_`)`
-- `<`_`type`_`> first_or_default(`_`lambda`_`,`_`default`_`)`
-- `<`_`type`_`> last(`_`lambda`_`)`
-- `<`_`type`_`> last_or_default(`_`lambda`_`,`_`default`_`)`
-- `<`_`type`_`> max(`_`lambda`_`)`
-- `<`_`type`_`> min(`_`lambda`_`)`
-- `void reverse()`
-- `bool any()`
-- `bool any(`_`lambda`_`)`
-- `map<`_`key`_`,`_`type`_`> groupby<`_`key`_`>(`_`lambda`_`)`
+- [ ] _`type`_`first(`_`lambda`_`)`
+- [ ] _`type`_`first_or_default(`_`lambda`_`,`_`default`_`)`
+- [ ] _`type`_`last(`_`lambda`_`)`
+- [ ] _`type`_`last_or_default(`_`lambda`_`,`_`default`_`)`
+- [ ] _`type`_`max(`_`lambda`_`)`
+- [ ] _`type`_`min(`_`lambda`_`)`
+- [ ] `void reverse()`
+- [ ] `bool any()`
+- [ ] `bool any(`_`lambda`_`)`
+- [ ] `map<`_`key`_`,`_`type`_`> groupby<`_`key`_`>(`_`lambda`_`)`
