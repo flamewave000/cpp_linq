@@ -35,6 +35,11 @@ int main() {
 	// Macro version of finding the number equal to 11 (will fail and return default)
 	test = FROM(nums, 10) LAST_OR_DEFAULT(0) { return item == 11; } END;
 
+	// Select the odds and then convert the array to a vector
+	auto vec = linq::from(nums, 10).where([](auto item) { return item % 2 == 1; }).to_vector();
+	// Select the evens and the convert the array to a vector
+	vec = FROM(nums, 10) WHERE { return item % 2 == 0; }  TO_VECTOR END;
+
 	typedef struct { int id, proj_id; string name; } Employee;
 	typedef struct { int id; string name; } Project;
 	typedef struct { struct { int id; string name; } employee; string proj_name; } EmployeeProject;

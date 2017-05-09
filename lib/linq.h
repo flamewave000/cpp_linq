@@ -275,9 +275,17 @@ namespace linq {
 		/// <param name="condition">Condition to be satisfied.</param>
 		/// <param name="defaultValue">Default value to be returned if no items satisfy the condition.</param>
 		/// <returns>The last item found which satisfies the condition; otherwise the provided <paramref name="defaultValue"/>.</returns>
-		_Ty last_or_default(_Ty defaultValue, const conditional &condition) {
+		_Ty last_or_default(_Ty defaultValue, const conditional &condition) const {
 			try { return last(condition); }
 			catch (...) { return defaultValue; }
+		}
+
+		/// <summary>
+		/// Helper method which converts this <see cref="linq::array"/> into a <see cref="std::vector"/>.
+		/// </summary>
+		/// <returns><see cref="std::vector"/> containing a copy of the elements of this <see cref="linq::array"/>.</returns>
+		inline ::std::vector<_Ty> to_vector() const {
+			return ::std::vector<_Ty>(*this);
 		}
 	};
 

@@ -90,6 +90,11 @@
 /// <example>FROM(nums) LAST_OR_DEFAULT(42) { return item % 2; }</example>
 #define LAST_OR_DEFAULT(defaultValue) END.last_or_default(defaultValue, [](auto item) -> bool
 
+/// <summary>
+/// Helper macro which converts the <see cref="linq::array"/> into a <see cref="std::vector"/>.
+/// </summary>
+#define TO_VECTOR END.to_vector(
+
 
 /*** Custom lambda expression alternatives ***/
 
@@ -115,7 +120,7 @@
 #define INTO_L , 
 
 /// <summary>
-/// Searches the array for the first item which satisfies the provided condition.
+/// Searches the array for the first item which satisfies the provided fully defined lambda condition.
 /// Throws <see cref="std::logic_error"/> if the condition is never satisfied.
 /// </summary>
 /// <exception cref="std::logic_error">Thrown if no items satisfy the condition.</exception>
@@ -128,4 +133,19 @@
 /// <param name="defaultValue">Default value to be returned if no items satisfy the fully defined lambda condition.</param>
 /// <example>FROM(nums) FIRST_OR_DEFAULT(42) [](auto item) -> bool { return item % 2; }</example>
 #define FIRST_OR_DEFAULT_L(defaultValue) END.first_or_default(defaultValue,
+
+/// <summary>
+/// Searches the array for the last item which satisfies the provided fully defined lambda condition.
+/// Throws <see cref="std::logic_error"/> if the condition is never satisfied.
+/// </summary>
+/// <exception cref="std::logic_error">Thrown if no items satisfy the condition.</exception>
+/// <example>FROM(nums) LAST [](auto item) -> bool { return item % 2; }</example>
+#define LAST_L END.last(
+/// <summary>
+/// Searches the array for the last item which satisfies the provided fully defined lambda condition.
+/// Returns the provided <paramref name="defaultValue"/> if the condition is never satisfied.
+/// </summary>
+/// <param name="defaultValue">Default value to be returned if no items satisfy the condition.</param>
+/// <example>FROM(nums) LAST_OR_DEFAULT(42) [](auto item) -> bool { return item % 2; }</example>
+#define LAST_OR_DEFAULT_L(defaultValue) END.last_or_default(defaultValue,
 #endif
