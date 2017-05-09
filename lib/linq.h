@@ -233,9 +233,9 @@ namespace linq {
 		/// <exception cref="std::logic_error">Thrown if no items satisfy the condition.</exception>
 		/// <returns>The first item found which satisfies the condition; otherwise an error is thrown.</returns>
 		_Ty first(const conditional &condition) const {
-			for (auto elem : (*this)) {
-				if (condition(elem)) {
-					return elem;
+			for (auto it = this->begin(), end = this->end(); it != end; it++) {
+				if (condition(*it)) {
+					return *it;
 				}
 			}
 			throw ::std::logic_error("no elements match the given conditional");
@@ -248,8 +248,35 @@ namespace linq {
 		/// <param name="condition">Condition to be satisfied.</param>
 		/// <param name="defaultValue">Default value to be returned if no items satisfy the condition.</param>
 		/// <returns>The first item found which satisfies the condition; otherwise the provided <paramref name="defaultValue"/>.</returns>
-		inline _Ty first_or_default(const _Ty &defaultValue, const conditional &condition) const {
+		inline _Ty first_or_default(_Ty defaultValue, const conditional &condition) const {
 			try { return first(condition); }
+			catch (...) { return defaultValue; }
+		}
+
+		/// <summary>
+		/// Searches the array for the last item which satisfies the provided condition.
+		/// Throws <see cref="std::logic_error"/> if the condition is never satisfied.
+		/// </summary>
+		/// <param name="condition">Condition to be satisfied.</param>
+		/// <exception cref="std::logic_error">Thrown if no items satisfy the condition.</exception>
+		/// <returns>The last item found which satisfies the condition; otherwise an error is thrown.</returns>
+		_Ty last(const conditional &condition) const {
+			for (auto it = this->rbegin(), end = this->rend(); it != end; it++) {
+				if (condition(*it)) {
+					return *it;
+				}
+			}
+			throw ::std::logic_error("no elements match the given conditional");
+		}
+		/// <summary>
+		/// Searches the array for the last item which satisfies the provided condition.
+		/// Returns the provided <paramref name="defaultValue"/> if the condition is never satisfied.
+		/// </summary>
+		/// <param name="condition">Condition to be satisfied.</param>
+		/// <param name="defaultValue">Default value to be returned if no items satisfy the condition.</param>
+		/// <returns>The last item found which satisfies the condition; otherwise the provided <paramref name="defaultValue"/>.</returns>
+		_Ty last_or_default(_Ty defaultValue, const conditional &condition) {
+			try { return last(condition); }
 			catch (...) { return defaultValue; }
 		}
 	};

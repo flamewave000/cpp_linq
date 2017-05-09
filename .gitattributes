@@ -1,0 +1,10 @@
+* text=lf
+*.txt text
+*.h text
+*.c text
+*.hpp text
+*.cpp text
+*.md text
+*.sln binary
+*.vcxproj binary
+*.vcxproj.filters binary

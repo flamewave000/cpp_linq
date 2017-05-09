@@ -168,8 +168,8 @@ The more complex procedure provided by the linq library, joining is performed on
 
 &#x2714; _`type`_`first(`_`lambda`_`)`\
 &#x2714; _`type`_`first_or_default(`_`lambda`_`,`_`default`_`)`\
-&#x25a2; _`type`_`last(`_`lambda`_`)`\
-&#x25a2; _`type`_`last_or_default(`_`lambda`_`,`_`default`_`)`\
+&#x2714; _`type`_`last(`_`lambda`_`)`\
+&#x2714; _`type`_`last_or_default(`_`lambda`_`,`_`default`_`)`\
 &#x25a2; `vector to_vector()`\
 &#x25a2; Wiki documentation
 

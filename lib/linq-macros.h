@@ -75,6 +75,21 @@
 /// <example>FROM(nums) FIRST_OR_DEFAULT(42) { return item % 2; }</example>
 #define FIRST_OR_DEFAULT(defaultValue) END.first_or_default(defaultValue, [](auto item) -> bool
 
+/// <summary>
+/// Searches the array for the last item which satisfies the provided condition.
+/// Throws <see cref="std::logic_error"/> if the condition is never satisfied.
+/// </summary>
+/// <exception cref="std::logic_error">Thrown if no items satisfy the condition.</exception>
+/// <example>FROM(nums) LAST { return item % 2; }</example>
+#define LAST END.last([](auto item) -> bool
+/// <summary>
+/// Searches the array for the last item which satisfies the provided condition.
+/// Returns the provided <paramref name="defaultValue"/> if the condition is never satisfied.
+/// </summary>
+/// <param name="defaultValue">Default value to be returned if no items satisfy the condition.</param>
+/// <example>FROM(nums) LAST_OR_DEFAULT(42) { return item % 2; }</example>
+#define LAST_OR_DEFAULT(defaultValue) END.last_or_default(defaultValue, [](auto item) -> bool
+
 
 /*** Custom lambda expression alternatives ***/
 

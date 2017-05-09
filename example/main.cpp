@@ -26,6 +26,15 @@ int main() {
 	// Macro version of finding the number equal to 11 (will fail and return default)
 	test = FROM(nums, 10) FIRST_OR_DEFAULT(0) { return item == 11; } END;
 
+	// Find the last even number
+	test = linq::from(nums, 10).last([](int item) { return (item % 2) == 0; });
+	// Find the number equal to 11 (will fail and return default)
+	test = linq::from(nums, 10).last_or_default(0, [](int item) { return item == 11; });
+	// Macro version of finding last even number
+	test = FROM(nums, 10) LAST { return (item % 2) == 0; } END;
+	// Macro version of finding the number equal to 11 (will fail and return default)
+	test = FROM(nums, 10) LAST_OR_DEFAULT(0) { return item == 11; } END;
+
 	typedef struct { int id, proj_id; string name; } Employee;
 	typedef struct { int id; string name; } Project;
 	typedef struct { struct { int id; string name; } employee; string proj_name; } EmployeeProject;
