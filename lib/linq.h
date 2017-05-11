@@ -32,8 +32,14 @@ namespace linq {
 			typedef _Ty second_argument_type;
 			typedef bool result_type;
 
+			/// <summary>
+			/// Performs a comparison of the two objects to see if the left is greater than the right.
+			/// </summary>
+			/// <param name="_Left">Left of the greater comparison.</param>
+			/// <param name="_Right">Right of the greater comparison.</param>
+			/// <returns>True if the <paramref name="_Left"/> is greater than the <paramref name="_Right"/>; otherwise false.</returns>
 			constexpr bool operator()(const _Ty& _Left, const _Ty& _Right) const
-			{	// apply operator< to operands
+			{	// apply operator> to operands
 				return (_Left > _Right);
 			}
 		};
@@ -43,14 +49,20 @@ namespace linq {
 		{	// transparent functor for operator<
 			typedef int is_transparent;
 
+			/// <summary>
+			/// Performs a generic comparison of the two objects to see if the left is greater than the right.
+			/// </summary>
+			/// <param name="_Left">Left of the greater comparison.</param>
+			/// <param name="_Right">Right of the greater comparison.</param>
+			/// <returns>True if the <paramref name="_Left"/> is greater than the <paramref name="_Right"/>; otherwise false.</returns>
 			template<class _Ty1, class _Ty2>
 			constexpr auto operator()(_Ty1&& _Left, _Ty2&& _Right) const
 				-> decltype(static_cast<_Ty1&&>(_Left) > static_cast<_Ty2&&>(_Right))
-			{	// transparently apply operator< to operands
+			{	// transparently apply operator> to operands
 				return (static_cast<_Ty1&&>(_Left) > static_cast<_Ty2&&>(_Right));
 			}
 		};
-		// TEMPLATE STRUCT more
+		// TEMPLATE STRUCT less
 		template<class _Ty = void>
 		struct less
 		{	// functor for operator<
@@ -58,17 +70,29 @@ namespace linq {
 			typedef _Ty second_argument_type;
 			typedef bool result_type;
 
+			/// <summary>
+			/// Performs a comparison of the two objects to see if the left is lesser than the right.
+			/// </summary>
+			/// <param name="_Left">Left of the lesser comparison.</param>
+			/// <param name="_Right">Right of the lesser comparison.</param>
+			/// <returns>True if the <paramref name="_Left"/> is lesser than the <paramref name="_Right"/>; otherwise false.</returns>
 			constexpr bool operator()(const _Ty& _Left, const _Ty& _Right) const
 			{	// apply operator< to operands
 				return (_Left < _Right);
 			}
 		};
-		// TEMPLATE STRUCT SPECIALIZATION more
+		// TEMPLATE STRUCT SPECIALIZATION less
 		template<>
 		struct less<void>
 		{	// transparent functor for operator<
 			typedef int is_transparent;
 
+			/// <summary>
+			/// Performs a generic comparison of the two objects to see if the left is lesser than the right.
+			/// </summary>
+			/// <param name="_Left">Left of the lesser comparison.</param>
+			/// <param name="_Right">Right of the lesser comparison.</param>
+			/// <returns>True if the <paramref name="_Left"/> is lesser than the <paramref name="_Right"/>; otherwise false.</returns>
 			template<class _Ty1, class _Ty2>
 			constexpr auto operator()(_Ty1&& _Left, _Ty2&& _Right) const
 				-> decltype(static_cast<_Ty1&&>(_Left) < static_cast<_Ty2&&>(_Right))
@@ -77,6 +101,11 @@ namespace linq {
 			}
 		};
 
+		/// <summary>
+		/// Basic lightweight structure which holds two objects of differing types.
+		/// </summary>
+		/// <typeparam name="_Left">The first object</typeparam>
+		/// <typeparam name="_Right">The second object</typeparam>
 		template<class _Left, class _Right>
 		struct merge_pair {
 			_Left left;
@@ -115,16 +144,30 @@ namespace linq {
 #endif
 
 	public:
+		/// <summary>
+		/// Delegate used for transforming the provided data into a new state which is returned by the call.
+		/// </summary>
 		template<class _Ret>
 		using conversion = ::std::function<_Ret(const _Ty&)>;
+		/// <summary>
+		/// Delegate for applying conditions on the provided item and returning a bool result.
+		/// </summary>
 		typedef ::std::function<bool(const _Ty&)> conditional;
+		/// <summary>
+		/// Delegate for comparing two items and returning a bool result.
+		/// </summary>
 		template<class _Ty2>
 		using comparison = ::std::function<bool(const _Ty&, const _Ty2&)>;
+		/// <summary>
+		/// Delegate that is expected to merge two items into a new item which is then returned by the call.
+		/// </summary>
 		template<class _Ty2, class _Ret>
 		using merger = ::std::function<_Ret(const _Ty&, const _Ty2&)>;
 
 	public:
-		/// <summary>Performs an item selection which is expected to transform the data in some way and return a new array.</summary>
+		/// <summary>
+		/// Performs an item selection which is expected to transform the data in some way and return a new array.
+		/// </summary>
 		/// <param name="selector">Lambda which defines how each item is transformed into the new type.</param>
 		/// <param name="result">The array to be filled with the new items.</param>
 		/// <typeparam name="_Ret">The new type being created and returned for the new array.</typeparam>
@@ -292,13 +335,19 @@ namespace linq {
 	/// <summary>
 	/// Helper function for converting a <see cref="std::vector"/> to an <see cref="linq::array"/>.
 	/// </summary>
-	template<class _Ty> inline array<_Ty> from(const ::std::vector<_Ty> &vec) { return array<_Ty>(vec); }
+	/// <param name="vec">The <see cref="std::vector"/> to be converted to a <see cref="linq::array"/>.</param>
+	/// <returns><see cref="linq::array"/> containing a copy of the elements from the provided <paramref name="vec"/>.</returns>
+	template<class _Ty>
+	inline array<_Ty> from(const ::std::vector<_Ty> &vec) { return array<_Ty>(vec); }
 	/// <summary>
 	/// Helper function for converting a C-style array pointer into an <see cref="linq::array"/>.
 	/// </summary>
+	/// <param name="c_arr">The pointer to a C-Style array to be converted to a <see cref="linq::array"/>.</param>
+	/// <param name="size">The size of the C-Style array.</param>
+	/// <returns><see cref="linq::array"/> containing a copy of the elements from the provided <paramref name="c_arr"/>.</returns>
 	template<class _Ty>
-	inline array<_Ty> from(const _Ty *c_arr, const size_t &count) {
-		return array<_Ty>(c_arr, c_arr + count);
+	inline array<_Ty> from(const _Ty *c_arr, const size_t &size) {
+		return array<_Ty>(c_arr, c_arr + size);
 	}
 }
 
@@ -308,9 +357,12 @@ namespace linq {
 #include "linq-macros.h"
 namespace linq {
 	/// <summary>
-	/// dummy function to make things uniform with the <see cref="FROM"/> macro
+	/// Pass-through function to make things uniform with the <see cref="FROM"/> macro.
 	/// </summary>
-	template<class _Ty> inline array<_Ty> from(const array<_Ty> &arr) { return arr; }
+	/// <param name="arr">The array to be passed through as a result.</param>
+	/// <returns>The same provided <see cref="arr"/>.</returns>
+	template<class _Ty>
+	inline array<_Ty> from(const array<_Ty> &arr) { return arr; }
 }
 #endif
 #endif

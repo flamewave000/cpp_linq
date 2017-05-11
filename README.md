@@ -171,7 +171,7 @@ The more complex procedure provided by the linq library, joining is performed on
 &#x2714; _`type`_`last(`_`lambda`_`)`\
 &#x2714; _`type`_`last_or_default(`_`lambda`_`,`_`default`_`)`\
 &#x2714; `vector to_vector()`\
-&#x25a2; Wiki documentation
+&#x2714; Wiki Core Documentation
 
 ### Other Possible Features
 &#x25a2; _`type`_`min(`_`lambda`_`)`\
@@ -181,3 +181,6 @@ The more complex procedure provided by the linq library, joining is performed on
 &#x25a2; `void reverse()`\
 &#x25a2; `map<`_`key`_`,`_`type`_`> groupby<`_`key`_`>(`_`lambda`_`)`\
 &#x25a2; Simple Website
+&#x25a2; Wiki Macro Docs
+&#x25a2; Wiki Examples
+&#x25a2; Wiki Change-Log
