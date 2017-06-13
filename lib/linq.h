@@ -365,6 +365,22 @@ namespace linq {
 		}
 
 		/// <summary>
+		/// Performs a summation on the elements by adding the result of each call to <paramref name="cumulator"/>.
+		/// </summary>
+		/// <param name="cumulator">Expression which provides a value from the given element, to be added to the final result.</param>
+		/// <typeparam name="_Ret">The type of value being added together.</typeparam>
+		/// <returns>The summed total of all the elements.</returns>
+		template<typename _Ret>
+		_Ret sum(const std::function<_Ret(const _Ty&)> &cumulator) {
+			_Ret result;
+			memset(&result, 0, sizeof(_Ret));
+			for (auto it = this->begin(), end = this->end(); it != end; it++) {
+				result += cumulator(*it);
+			}
+			return result;
+		}
+
+		/// <summary>
 		/// Helper method which converts this <see cref="linq::array"/> into a <see cref="std::vector"/>.
 		/// </summary>
 		/// <returns><see cref="std::vector"/> containing a copy of the elements of this <see cref="linq::array"/>.</returns>

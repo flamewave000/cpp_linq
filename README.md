@@ -173,7 +173,7 @@ The more complex procedure provided by the linq library, joining is performed on
 | Wiki Core Documentation
 
 ### Features Planned for v1.1
-&#x25a2; _`type`_`sum(`_`lambda`_`)`\
+&#x2714; _`type`_`sum(`_`lambda`_`)`\
 &#x25a2; _`type`_`min(`_`lambda`_`)`\
 &#x25a2; _`type`_`max(`_`lambda`_`)`\
 &#x2714; `bool any()`\

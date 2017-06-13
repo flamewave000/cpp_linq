@@ -87,6 +87,9 @@ int main() {
 		// Checks if there is any element less than 0
 		exists = linq::from(nums, 10).any([](auto item) { return item < 0; });
 
+		// Calculates the sum of all the elements
+		int total = linq::from(nums, 10).sum<int>([](auto item) { return item; });
+
 		// First method of joining using the MERGE_JOIN
 		auto empProjs = FROM(employees, 3)
 			MERGE_JOIN(Project, EmployeeProject) projects
