@@ -269,6 +269,16 @@ namespace linq {
 		}
 
 		/// <summary>
+		/// Returns the first element in the array or throws <see cref="std::logic_error"/> if the array is empty.
+		/// </summary>
+		/// <returns>The first element of the array; otherwise an error is thrown.</returns>
+		_Ty first() const {
+			if (this->size() > 0) {
+				return *(this->begin());
+			}
+			throw ::std::logic_error("array is empty");
+		}
+		/// <summary>
 		/// Searches the array for the first item which satisfies the provided condition.
 		/// Throws <see cref="std::logic_error"/> if the condition is never satisfied.
 		/// </summary>
@@ -283,7 +293,6 @@ namespace linq {
 			}
 			throw ::std::logic_error("no elements match the given conditional");
 		}
-
 		/// <summary>
 		/// Searches the array for the first item which satisfies the provided condition.
 		/// Returns the provided <paramref name="defaultValue"/> if the condition is never satisfied.
@@ -296,6 +305,17 @@ namespace linq {
 			catch (...) { return defaultValue; }
 		}
 
+		/// <summary>
+		/// Returns the last element in the array or throws <see cref="std::logic_error"/> if the array is empty.
+		/// </summary>
+		/// <returns>The last element of the array; otherwise an error is thrown.</returns>
+		_Ty last() const {
+			size_t pos = this->size() - 1;
+			if (pos >= 0) {
+				return this->at(pos);
+			}
+			throw ::std::logic_error("array is empty");
+		}
 		/// <summary>
 		/// Searches the array for the last item which satisfies the provided condition.
 		/// Throws <see cref="std::logic_error"/> if the condition is never satisfied.

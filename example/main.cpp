@@ -40,6 +40,19 @@ int main() {
 	// Select the evens and the convert the array to a vector
 	vec = FROM(nums, 10) WHERE { return item % 2 == 0; }  TO_VECTOR END;
 
+	// Retrieves the first element
+	auto first = linq::from(nums, 10).first();
+	// Retrieves the first even number in the list
+	first = linq::from(nums, 10).first([](auto item) { return item % 2 == 0; });
+	// Retrieves the first number greater than 10, or returns 0 if none match
+	first = linq::from(nums, 10).first_or_default(0, [](auto item) { return item > 10; });
+	// Retrieves the last element in the array
+	auto last = linq::from(nums, 10).last();
+	// Retrieves the last number in the array that is less than 10
+	last = linq::from(nums, 10).last([](auto item) { return item < 10; });
+	// Retrieves the last number in the array greater than 10, or returns 0 if none match
+	last = linq::from(nums, 10).last_or_default(0, [](auto item) { return item > 10; });
+
 	typedef struct { int id, proj_id; string name; } Employee;
 	typedef struct { int id; string name; } Project;
 	typedef struct { struct { int id; string name; } employee; string proj_name; } EmployeeProject;
