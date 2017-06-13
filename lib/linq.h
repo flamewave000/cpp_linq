@@ -344,6 +344,27 @@ namespace linq {
 		}
 
 		/// <summary>
+		/// Determines if the array contains any elements.
+		/// </summary>
+		/// <returns>true if the array contains elements; otherwise false.</returns>
+		inline bool any() const {
+			return this->size() > 0;
+		}
+		/// <summary>
+		/// Determines if any elements in the array satisfy a condition.
+		/// </summary>
+		/// <param name="conditional">The conditional expression to be satisfied.</param>
+		/// <returns>true if an element satisfies the condition; otherwise false.</returns>
+		bool any(const conditional &condition) const {
+			for (auto it = this->begin(), end = this->end(); it != end; it++) {
+				if (condition(*it)) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		/// <summary>
 		/// Helper method which converts this <see cref="linq::array"/> into a <see cref="std::vector"/>.
 		/// </summary>
 		/// <returns><see cref="std::vector"/> containing a copy of the elements of this <see cref="linq::array"/>.</returns>
