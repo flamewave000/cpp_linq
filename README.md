@@ -164,23 +164,25 @@ The more complex procedure provided by the linq library, joining is performed on
 ## Future Features [top](#flame-linq)
 &#x2714; Complete &#x25a2; Incomplete
 
-### Features Planned for v1.0
+### Release v1.0
+| _`type`_`first(`_`lambda`_`)`\
+| _`type`_`first_or_default(`_`lambda`_`,`_`default`_`)`\
+| _`type`_`last(`_`lambda`_`)`\
+| _`type`_`last_or_default(`_`lambda`_`,`_`default`_`)`\
+| `vector to_vector()`\
+| Wiki Core Documentation
 
-&#x2714; _`type`_`first(`_`lambda`_`)`\
-&#x2714; _`type`_`first_or_default(`_`lambda`_`,`_`default`_`)`\
-&#x2714; _`type`_`last(`_`lambda`_`)`\
-&#x2714; _`type`_`last_or_default(`_`lambda`_`,`_`default`_`)`\
-&#x2714; `vector to_vector()`\
-&#x2714; Wiki Core Documentation
-
-### Other Possible Features
+### Features Planned for v1.1
+&#x25a2; _`type`_`sum(`_`lambda`_`)`\
 &#x25a2; _`type`_`min(`_`lambda`_`)`\
 &#x25a2; _`type`_`max(`_`lambda`_`)`\
 &#x25a2; `bool any()`\
 &#x25a2; `bool any(`_`lambda`_`)`\
 &#x25a2; `void reverse()`\
-&#x25a2; `map<`_`key`_`,`_`type`_`> groupby<`_`key`_`>(`_`lambda`_`)`\
-&#x25a2; Simple Website
-&#x25a2; Wiki Macro Docs
-&#x25a2; Wiki Examples
+&#x25a2; `map<`_`key`_`,`_`type`_`> groupby<`_`key`_`>(`_`lambda`_`)`
+
+### Future Features
+&#x25a2; Simple Website\
+&#x25a2; Wiki Macro Docs\
+&#x25a2; Wiki Examples\
 &#x25a2; Wiki Change-Log
