@@ -8,6 +8,11 @@
 #include <vector>
 #endif
 #endif
+#ifndef _UNORDERED_MAP_
+#ifndef _GLIBCXX_UNORDERED_MAP
+#include <unordered_map>
+#endif
+#endif
 #ifndef _FUNCTIONAL_
 #ifndef _GLIBCXX_FUNCTIONAL
 #include <functional>
@@ -111,6 +116,11 @@ namespace linq {
 			_Left left;
 			_Right right;
 		};
+		template<class _Key, class _Value>
+		struct key_value_pair {
+			_Key key;
+			_Value value;
+		};
 	}
 
 	/// <summary>predicate used for sorting objects in ascending order</summary>
@@ -149,6 +159,11 @@ namespace linq {
 		/// </summary>
 		template<class _Ret>
 		using conversion = ::std::function<_Ret(const _Ty&)>;
+		/// <summary>
+		/// Delegate used for transforming the provided data into a new state which is returned by the call.
+		/// </summary>
+		template<class _Val, class_Ret>
+		using selector = ::std::function<_Ret(const _Val&)>;
 		/// <summary>
 		/// Delegate for applying conditions on the provided item and returning a bool result.
 		/// </summary>
@@ -370,14 +385,45 @@ namespace linq {
 		/// <param name="cumulator">Expression which provides a value from the given element, to be added to the final result.</param>
 		/// <typeparam name="_Ret">The type of value being added together.</typeparam>
 		/// <returns>The summed total of all the elements.</returns>
-		template<typename _Ret>
-		_Ret sum(const std::function<_Ret(const _Ty&)> &cumulator) {
+		template<class _Ret>
+		_Ret sum(const ::std::function<_Ret(const _Ty&)> &cumulator) const {
 			_Ret result;
 			memset(&result, 0, sizeof(_Ret));
 			for (auto it = this->begin(), end = this->end(); it != end; it++) {
 				result += cumulator(*it);
 			}
 			return result;
+		}
+
+		/// <summary>
+		/// Helper method which converts this <see cref="linq::array"/> into a <see cref="std::unordered_map"/> using the
+		/// provided <paramref name="key_selector"/> function to select the key to be used. Value becomes the original object.
+		/// </summary>
+		/// <param name="key_selector">Selector delegate for selecting the key value for each element.</param>
+		/// <returns><see cref="std::unordered_map"/> containing the elements using the selected keys.</returns>
+		template<class _Key>
+		::std::unordered_map<_Key, _Ty> to_map(const ::std::function<_Key(const _Ty&)> &key_selector) const {
+			::std::unordered_map<_Key, _Ty> map;
+			for (auto it = this->begin(), end = this->end(); it != end; it++) {
+				map[key_selector(*it)] = *it;
+			}
+			return map;
+		}
+
+		/// <summary>
+		/// Helper method which converts this <see cref="linq::array"/> into a <see cref="std::unordered_map"/> using the
+		/// provided <paramref name="key_selector"/> function to select the key to be used, and the <paramref name="value_selector"/>
+		/// to select the value.
+		/// </summary>
+		/// <param name="key_selector">Selector delegate for selecting the key value for each element.</param>
+		/// <returns><see cref="std::unordered_map"/> containing the elements using the selected keys.</returns>
+		template<class _Key, class _Value>
+		::std::unordered_map<_Key, _Value> to_map(const ::std::function<_Key(const _Ty&)> &key_selector, const ::std::function<_Value(const _Ty&)> &value_selector) const {
+			::std::unordered_map<_Key, _Value> map;
+			for (auto it = this->begin(), end = this->end(); it != end; it++) {
+				map[key_selector(*it)] = value_selector(*it);
+			}
+			return map;
 		}
 
 		/// <summary>

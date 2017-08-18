@@ -14,12 +14,12 @@ using namespace std;
 #define PERFORMANCE_ITERATIONS 10000
 
 int main() {
-	typedef struct { int i; string desc; } description;
+	typedef struct { int i; std::string desc; } description;
 	int nums[10] = { 1,2,3,4,5,6,7,8,9,10 };
 
-	typedef struct { int id, proj_id; string name; } Employee;
-	typedef struct { int id; string name; } Project;
-	typedef struct { struct { int id; string name; } employee; string proj_name; } EmployeeProject;
+	typedef struct { int id, proj_id; std::string name; } Employee;
+	typedef struct { int id; std::string name; } Project;
+	typedef struct { struct { int id; std::string name; } employee; std::string proj_name; } EmployeeProject;
 	Employee employees[3] = { { 0, 0, "Joe" },{ 1, 1, "Jane" },{ 2, 1, "Alex" } };
 	vector<Project> projects = { { 0, "Financial Inc." },{ 1, "Contracts R Us" } };
 
@@ -111,6 +111,22 @@ int main() {
 		empProjs = linq::from(employees, 3)
 			.join<Project>(projects, [](auto left, auto right) -> bool { return left.proj_id == right.id; }) // left/right condition
 			.select<EmployeeProject>([](auto item) ->EmployeeProject { return { { item.left.id, item.left.name }, item.right.name }; });
+
+		// Group the employees by their ID
+		auto empDirectory = FROM(employees, 3)
+			MAP(int, Employee)
+				KEY { return item.id; }
+				VALUE { return item; }
+			END;
+		// Group the employee names by their ID using full lambdas
+		auto empNameDirectory = FROM(employees, 3)
+			MAP(int, std::string)
+				KEY_L [](auto item) { return item.id; }
+				VALUE_L [](auto item) { return item.name; }
+			END;
+
+		empDirectory = linq::from(employees, 3).to_map<int>([](auto item) { return item.id; });
+		empNameDirectory = linq::from(employees, 3).to_map<int, std::string>([](auto item)->int { return item.id; }, [](auto item)->string { return item.name; });
 
 #if PERFORMANCE_TEST
 		float milliseconds = 0;
