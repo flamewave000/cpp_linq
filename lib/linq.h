@@ -23,6 +23,11 @@
 #include <algorithm>
 #endif
 #endif
+#ifndef _CSTRING_
+#ifndef _GLIBCXX_CSTRING
+#include <cstring>
+#endif
+#endif
 
 #include <exception>
 #include <stdexcept>
@@ -162,7 +167,7 @@ namespace linq {
 		/// <summary>
 		/// Delegate used for transforming the provided data into a new state which is returned by the call.
 		/// </summary>
-		template<class _Val, class_Ret>
+		template<class _Val, class _Ret>
 		using selector = ::std::function<_Ret(const _Val&)>;
 		/// <summary>
 		/// Delegate for applying conditions on the provided item and returning a bool result.
