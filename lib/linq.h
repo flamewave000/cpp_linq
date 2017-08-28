@@ -147,7 +147,7 @@ namespace linq {
 		array(::std::vector<_Ty>&& _Right) : vector(_Right) {}
 		array(::std::initializer_list<_Ty> _Ilist) : vector(_Ilist) {}
 		template<class _Iter, class = ::std::enable_if_t<::std::_Is_iterator<_Iter>::value>>
-		array(_Iter _First, _Iter _Last, const _Alloc& _Al = _Alloc()) : vector(_First, _Last, _Al) {}
+		array(_Iter _First, _Iter _Last) : vector(_First, _Last) {}
 #elif _STL_VECTOR_H
 		array() : ::std::vector<_Ty>() {}
 		array(::std::size_t __n) : ::std::vector<_Ty>(__n) {}
