@@ -1,6 +1,6 @@
 #include <iostream>
 #define LINQ_USE_MACROS
-#include "../lib/linq.h"
+#include "../include/linq.h"
 
 #ifdef __linux__
 #include <sys/time.h>
