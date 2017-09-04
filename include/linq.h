@@ -391,13 +391,85 @@ namespace linq {
 		/// <typeparam name="_Ret">The type of value being added together.</typeparam>
 		/// <returns>The summed total of all the elements.</returns>
 		template<class _Ret>
-		_Ret sum(const ::std::function<_Ret(const _Ty&)> &cumulator) const {
+		_Ret sum(const selector<_Ty, _Ret> &value_selector) const {
 			_Ret result;
 			memset(&result, 0, sizeof(_Ret));
 			for (auto it = this->begin(), end = this->end(); it != end; it++) {
-				result += cumulator(*it);
+				result += value_selector(*it);
 			}
 			return result;
+		}
+
+		/// <summary>
+		/// Calculates the minimum of the selected values.
+		/// </summary>
+		/// <param name="value_selector">Used to select the value for the given element</param>
+		/// <returns>The smallest value found.</returns>
+		inline _Ty min() const { return comp_select<_Ty>([](_Ty x) { return x; }, ::linq::ascending); }
+		/// <summary>
+		/// Calculates the minimum of the selected values.
+		/// </summary>
+		/// <param name="value_selector">Used to select the value for the given element</param>
+		/// <typeparam name="_Ret">Value type to be compared for the smallest.</typeparam>
+		/// <returns>The smallest value found.</returns>
+		template<class _Ret>
+		inline _Ret min(const selector<_Ty, _Ret> &value_selector) const {
+			return comp_select(value_selector, ::linq::ascending);
+		}
+		/// <summary>
+		/// Calculates the minimum of the selected values.
+		/// </summary>
+		/// <param name="value_selector">Used to select the value for the given element</param>
+		/// <returns>The smallest value found.</returns>
+		inline _Ty max() const { return comp_select<_Ty>([](_Ty x) { return x; }, ::linq::descending); }
+		/// <summary>
+		/// Calculates the maximum of the selected values.
+		/// </summary>
+		/// <param name="value_selector">Used to select the value for the given element</param>
+		/// <typeparam name="_Ret">Value type to be compared for the largest.</typeparam>
+		/// <returns>The largest value found.</returns>
+		template<class _Ret>
+		inline _Ret max(const selector<_Ty, _Ret> &value_selector) const {
+			return comp_select(value_selector, ::linq::descending);
+		}
+		/// <summary>
+		/// Select values to be compared. The value selected most is returned.
+		/// </summary>
+		/// <param name="value_selector">Used to select the value on each element for comparison.</param>
+		/// <param name="pred">Predicate used to compare the values. Returns true if the left is selected over the right.</param>
+		/// <typeparam name="_Ret">Value being compared and returned.</typeparam>
+		/// <typeparam name="_Pred">Predicate to perform a comparison between the left and right arguments. Returns true if left is selected over the right.</typeparam>
+		/// <returns>Value that is selected above all others.</returns>
+		template<class _Ret, typename _Pred>
+		_Ret comp_select(const selector<_Ty, _Ret> & value_selector, const _Pred &pred) const {
+			_Ret result, tmp;
+			memset(&result, 0, sizeof(_Ret));
+			size_t c = 1, size = this->size();
+			if (size > 0) result = value_selector(this->at(0));
+			else return result;
+			for (; c < size; c++) {
+				tmp = value_selector(this->at(c));
+				if (pred(tmp, result)) {
+					result = tmp;
+				}
+			}
+			return result;
+		}
+
+		/// <summary>
+		/// Reverses the order of the elements in the array.
+		/// </summary>
+		/// <returns>Self reference.</returns>
+		array<_Ty> &reverse() {
+			_Ty tmp;
+			size_t c = 0, size = this->size(), half;
+			_Ty *data = this->data();
+			for (half = size >> 1, size--; c < size; c++) {
+				tmp = data[c];
+				data[c] = data[size - c];
+				data[size - c] = tmp;
+			}
+			return *this;
 		}
 
 		/// <summary>
@@ -407,7 +479,7 @@ namespace linq {
 		/// <param name="key_selector">Selector delegate for selecting the key value for each element.</param>
 		/// <returns><see cref="std::unordered_map"/> containing the elements using the selected keys.</returns>
 		template<class _Key>
-		::std::unordered_map<_Key, _Ty> to_map(const ::std::function<_Key(const _Ty&)> &key_selector) const {
+		::std::unordered_map<_Key, _Ty> to_map(const selector<_Ty, _Key> &key_selector) const {
 			::std::unordered_map<_Key, _Ty> map;
 			for (auto it = this->begin(), end = this->end(); it != end; it++) {
 				map[key_selector(*it)] = *it;
@@ -423,7 +495,7 @@ namespace linq {
 		/// <param name="key_selector">Selector delegate for selecting the key value for each element.</param>
 		/// <returns><see cref="std::unordered_map"/> containing the elements using the selected keys.</returns>
 		template<class _Key, class _Value>
-		::std::unordered_map<_Key, _Value> to_map(const ::std::function<_Key(const _Ty&)> &key_selector, const ::std::function<_Value(const _Ty&)> &value_selector) const {
+		::std::unordered_map<_Key, _Value> to_map(const selector<_Ty, _Key> &key_selector, const selector<_Ty, _Value> &value_selector) const {
 			::std::unordered_map<_Key, _Value> map;
 			for (auto it = this->begin(), end = this->end(); it != end; it++) {
 				map[key_selector(*it)] = value_selector(*it);

@@ -1,3 +1,4 @@
+#define NOMINMAX
 #include <iostream>
 #define LINQ_USE_MACROS
 #include "../include/linq.h"
@@ -10,7 +11,7 @@
 
 using namespace std;
 
-#define PERFORMANCE_TEST false
+#define PERFORMANCE_TEST true
 #define PERFORMANCE_ITERATIONS 10000
 
 int main() {
@@ -81,6 +82,17 @@ int main() {
 		last = linq::from(nums, 10).last([](auto item) { return item < 10; });
 		// Retrieves the last number in the array greater than 10, or returns 0 if none match
 		last = linq::from(nums, 10).last_or_default(0, [](auto item) { return item > 10; });
+
+		// Gets the maximum value
+		auto max = linq::from(nums, 10).max();
+		// Gets the maximum of the selected value
+		max = linq::from(nums, 10).max<int>([](auto x) { return x; });
+		// Reverses the array's elements
+		auto reversed = linq::from(nums, 10).reverse();
+		// Gets the minimum value
+		auto min = linq::from(nums, 10).min();
+		// Gets the minimum of the selected value
+		min = linq::from(nums, 10).min<int>([](auto x) { return x; });
 
 		// Checks if the array contains any elements
 		auto exists = linq::from(nums, 10).any();

@@ -174,11 +174,11 @@ The more complex procedure provided by the linq library, joining is performed on
 
 ### Features Planned for v1.1
 &#x2714; _`type`_`sum(`_`lambda`_`)`\
-&#x25a2; _`type`_`min(`_`lambda`_`)`\
-&#x25a2; _`type`_`max(`_`lambda`_`)`\
+&#x2714; _`type`_`min(`_`lambda`_`)`\
+&#x2714; _`type`_`max(`_`lambda`_`)`\
 &#x2714; `bool any()`\
 &#x2714; `bool any(`_`lambda`_`)`\
-&#x25a2; `void reverse()`\
+&#x2714; `void reverse()`\
 &#x2714; `map<`_`key`_`,`_`type`_`> to_map<`_`key`_`>(`_`lambda`_`)`\
 &#x25a2; `map<`_`key`_`,`_`type`_`> group_by<`_`key`_`>(`_`lambda`_`)`
 
