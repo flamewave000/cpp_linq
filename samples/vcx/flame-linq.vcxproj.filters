@@ -20,10 +20,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\linq.h">
+    <ClInclude Include="..\..\include\linq.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\linq-macros.h">
+    <ClInclude Include="..\..\include\linq-macros.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -138,24 +138,24 @@ namespace linq {
 	/// </summary>
 	/// <typeparam name="_Ty">Type for the elements to be held</typeparam>
 	template<class _Ty>
-	class array : public ::std::vector<_Ty> {
+	class linq_vec : public ::std::vector<_Ty> {
 	public:
 #ifdef _VECTOR_
-		array() : vector() {}
-		array(const ::std::size_t &_Count) : vector(_Count) {}
-		array(const ::std::vector<_Ty>&_Vec) : vector(_Vec) {}
-		array(::std::vector<_Ty>&& _Right) : vector(_Right) {}
-		array(::std::initializer_list<_Ty> _Ilist) : vector(_Ilist) {}
+		linq_vec() : vector() {}
+		linq_vec(const ::std::size_t &_Count) : vector(_Count) {}
+		linq_vec(const ::std::vector<_Ty>&_Vec) : vector(_Vec) {}
+		linq_vec(::std::vector<_Ty>&& _Right) : vector(_Right) {}
+		linq_vec(::std::initializer_list<_Ty> _Ilist) : vector(_Ilist) {}
 		template<class _Iter, class = ::std::enable_if_t<::std::_Is_iterator<_Iter>::value>>
-		array(_Iter _First, _Iter _Last) : vector(_First, _Last) {}
+		linq_vec(_Iter _First, _Iter _Last) : vector(_First, _Last) {}
 #elif _STL_VECTOR_H
-		array() : ::std::vector<_Ty>() {}
-		array(::std::size_t __n) : ::std::vector<_Ty>(__n) {}
-		array(const ::std::vector<_Ty>&__x) : ::std::vector<_Ty>(__x) {}
-		array(::std::vector<_Ty>&& __x) : ::std::vector<_Ty>(__x) {}
-		array(::std::initializer_list<_Ty> __l) : ::std::vector<_Ty>(__l) {}
+		linq_vec() : ::std::vector<_Ty>() {}
+		linq_vec(::std::size_t __n) : ::std::vector<_Ty>(__n) {}
+		linq_vec(const ::std::vector<_Ty>&__x) : ::std::vector<_Ty>(__x) {}
+		linq_vec(::std::vector<_Ty>&& __x) : ::std::vector<_Ty>(__x) {}
+		linq_vec(::std::initializer_list<_Ty> __l) : ::std::vector<_Ty>(__l) {}
 		template<typename _InputIterator, typename = std::_RequireInputIter<_InputIterator>>
-		array(_InputIterator __first, _InputIterator __last) : ::std::vector<_Ty>(__first, __last) {}
+		linq_vec(_InputIterator __first, _InputIterator __last) : ::std::vector<_Ty>(__first, __last) {}
 #endif
 
 	public:
@@ -192,7 +192,7 @@ namespace linq {
 		/// <param name="result">The array to be filled with the new items.</param>
 		/// <typeparam name="_Ret">The new type being created and returned for the new array.</typeparam>
 		template<class _Ret>
-		void select(const conversion<_Ret> &selector, array<_Ret> &result) const {
+		void select(const conversion<_Ret> &selector, linq_vec<_Ret> &result) const {
 			result.resize(this->size());
 			for (::std::size_t c = 0, l = this->size(); c < l; c++) {
 				result[c] = selector((*this)[c]);
@@ -206,8 +206,8 @@ namespace linq {
 		/// <typeparam name="_Ret">The new type being created and returned for the new array.</typeparam>
 		/// <returns>The new array of transformed items.</returns>
 		template<class _Ret>
-		inline array<_Ret> select(const conversion<_Ret> &selector) const {
-			array<_Ret> result(this->size());
+		inline linq_vec<_Ret> select(const conversion<_Ret> &selector) const {
+			linq_vec<_Ret> result(this->size());
 			select(selector, result);
 			return result;
 		}
@@ -217,7 +217,7 @@ namespace linq {
 		/// </summary>
 		/// <param name="conditional">The lambda which determines if an item is to be added to the new list.</param>
 		/// <returns>The new list of filtered items.</returns>
-		array<_Ty> where(const conditional &condition) const {
+		linq_vec<_Ty> where(const conditional &condition) const {
 			// Record of elements to keep
 			::std::vector<size_t> keep;
 			// Loop through elements to see which are being kept and which are to be thrown
@@ -228,7 +228,7 @@ namespace linq {
 					keep.push_back(c);
 				}
 			}
-			array<_Ty> result(keep.size());
+			linq_vec<_Ty> result(keep.size());
 			// We will now take each element we are keeping and move them into sequential
 			// order at the begining of our original list
 			for (::std::size_t c = 0, last = 0, l = keep.size(); c < l; c++) {
@@ -250,7 +250,7 @@ namespace linq {
 		/// <typeparam name="_Pr">The type of the predicate object, method or lambda</typeparam>
 		/// <returns>A reference to this list (used for chaining calls).</returns>
 		template<class _Pr>
-		inline array<_Ty>& orderby(const _Pr &pred) {
+		inline linq_vec<_Ty>& orderby(const _Pr &pred) {
 			::std::sort(this->begin(), this->end(), pred);
 			return *this;
 		}
@@ -265,8 +265,8 @@ namespace linq {
 		/// <typeparam name="_Ret">The type to be returned in the new merged array.</typeparam>
 		/// <returns>New array of merged items.</returns>
 		template<class _Ty2, class _Ret>
-		array<_Ret> join(const array<_Ty2> &arr, const merger<_Ty2, _Ret> &merge, const comparison<_Ty2> &on) const {
-			array<_Ret> merged;
+		linq_vec<_Ret> join(const linq_vec<_Ty2> &arr, const merger<_Ty2, _Ret> &merge, const comparison<_Ty2> &on) const {
+			linq_vec<_Ret> merged;
 			for (auto first : *this) {
 				for (auto second : arr) {
 					if (on(first, second)) {
@@ -284,7 +284,7 @@ namespace linq {
 		/// <typeparam name="_Ty2">The type contained in the array being joined.</typeparam>
 		/// <returns>New array of paired items.</returns>
 		template<class _Ty2>
-		inline array<core::merge_pair<_Ty, _Ty2>> join(const array<_Ty2> &arr, const comparison<_Ty2> &on) const {
+		inline linq_vec<core::merge_pair<_Ty, _Ty2>> join(const linq_vec<_Ty2> &arr, const comparison<_Ty2> &on) const {
 			return join<_Ty2, core::merge_pair<_Ty, _Ty2>>(arr, [](auto left, auto right)->core::merge_pair<_Ty, _Ty2> { return { left, right }; }, on);
 		}
 
@@ -413,9 +413,7 @@ namespace linq {
 		/// <typeparam name="_Ret">Value type to be compared for the smallest.</typeparam>
 		/// <returns>The smallest value found.</returns>
 		template<class _Ret>
-		inline _Ret min(const selector<_Ty, _Ret> &value_selector) const {
-			return comp_select(value_selector, ::linq::ascending);
-		}
+		inline _Ret min(const selector<_Ty, _Ret> &value_selector) const { return comp_select(value_selector, ::linq::ascending); }
 		/// <summary>
 		/// Calculates the minimum of the selected values.
 		/// </summary>
@@ -429,9 +427,7 @@ namespace linq {
 		/// <typeparam name="_Ret">Value type to be compared for the largest.</typeparam>
 		/// <returns>The largest value found.</returns>
 		template<class _Ret>
-		inline _Ret max(const selector<_Ty, _Ret> &value_selector) const {
-			return comp_select(value_selector, ::linq::descending);
-		}
+		inline _Ret max(const selector<_Ty, _Ret> &value_selector) const { return comp_select(value_selector, ::linq::descending); }
 		/// <summary>
 		/// Select values to be compared. The value selected most is returned.
 		/// </summary>
@@ -460,7 +456,7 @@ namespace linq {
 		/// Reverses the order of the elements in the array.
 		/// </summary>
 		/// <returns>Self reference.</returns>
-		array<_Ty> &reverse() {
+		linq_vec<_Ty> &reverse() {
 			_Ty tmp;
 			size_t c = 0, size = this->size(), half;
 			_Ty *data = this->data();
@@ -518,7 +514,7 @@ namespace linq {
 	/// <param name="vec">The <see cref="std::vector"/> to be converted to a <see cref="linq::array"/>.</param>
 	/// <returns><see cref="linq::array"/> containing a copy of the elements from the provided <paramref name="vec"/>.</returns>
 	template<class _Ty>
-	inline array<_Ty> from(const ::std::vector<_Ty> &vec) { return array<_Ty>(vec); }
+	inline linq_vec<_Ty> from(const ::std::vector<_Ty> &vec) { return linq_vec<_Ty>(vec); }
 	/// <summary>
 	/// Helper function for converting a C-style array pointer into an <see cref="linq::array"/>.
 	/// </summary>
@@ -526,15 +522,15 @@ namespace linq {
 	/// <param name="size">The size of the C-Style array.</param>
 	/// <returns><see cref="linq::array"/> containing a copy of the elements from the provided <paramref name="c_arr"/>.</returns>
 	template<class _Ty>
-	inline array<_Ty> from(const _Ty *c_arr, const size_t &size) {
-		return array<_Ty>(c_arr, c_arr + size);
+	inline linq_vec<_Ty> from(const _Ty *c_arr, const size_t &size) {
+		return linq_vec<_Ty>(c_arr, c_arr + size);
 	}
 }
 
 
 #ifdef LINQ_USE_MACROS
 #ifndef FROM
-#include "linq-macros.h"
+#include "linq-macros.hpp"
 namespace linq {
 	/// <summary>
 	/// Pass-through function to make things uniform with the <see cref="FROM"/> macro.
@@ -542,7 +538,7 @@ namespace linq {
 	/// <param name="arr">The array to be passed through as a result.</param>
 	/// <returns>The same provided <see cref="arr"/>.</returns>
 	template<class _Ty>
-	inline array<_Ty> from(const array<_Ty> &arr) { return arr; }
+	constexpr inline linq_vec<_Ty> from(const linq_vec<_Ty> &arr) { return arr; }
 }
 #endif
 #endif

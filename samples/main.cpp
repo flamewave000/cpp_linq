@@ -1,7 +1,7 @@
 #define NOMINMAX
 #include <iostream>
 #define LINQ_USE_MACROS
-#include "../include/linq.h"
+#include "linq.hpp"
 
 #ifdef __linux__
 #include <sys/time.h>
