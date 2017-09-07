@@ -475,7 +475,7 @@ namespace linq {
 		/// <param name="key_selector">Selector delegate for selecting the key value for each element.</param>
 		/// <returns><see cref="std::unordered_map"/> containing the elements using the selected keys.</returns>
 		template<class _Key>
-		::std::unordered_map<_Key, _Ty> to_map(const selector<_Ty, _Key> &key_selector) const {
+		::std::unordered_map<_Key, _Ty> map(const selector<_Ty, _Key> &key_selector) const {
 			::std::unordered_map<_Key, _Ty> map;
 			for (auto it = this->begin(), end = this->end(); it != end; it++) {
 				map[key_selector(*it)] = *it;
@@ -491,7 +491,7 @@ namespace linq {
 		/// <param name="key_selector">Selector delegate for selecting the key value for each element.</param>
 		/// <returns><see cref="std::unordered_map"/> containing the elements using the selected keys.</returns>
 		template<class _Key, class _Value>
-		::std::unordered_map<_Key, _Value> to_map(const selector<_Ty, _Key> &key_selector, const selector<_Ty, _Value> &value_selector) const {
+		::std::unordered_map<_Key, _Value> map(const selector<_Ty, _Key> &key_selector, const selector<_Ty, _Value> &value_selector) const {
 			::std::unordered_map<_Key, _Value> map;
 			for (auto it = this->begin(), end = this->end(); it != end; it++) {
 				map[key_selector(*it)] = value_selector(*it);
@@ -508,6 +508,13 @@ namespace linq {
 		}
 	};
 
+	/// <summary>
+	/// Helper function for converting a <see cref="std::vector"/> to an <see cref="linq::array"/>.
+	/// </summary>
+	/// <param name="vec">The <see cref="std::vector"/> to be converted to a <see cref="linq::array"/>.</param>
+	/// <returns><see cref="linq::array"/> containing a copy of the elements from the provided <paramref name="vec"/>.</returns>
+	template<class _Ty>
+	inline linq_vec<_Ty> from(const ::std::initializer_list<_Ty> &ilist) { return linq_vec<_Ty>(vec); }
 	/// <summary>
 	/// Helper function for converting a <see cref="std::vector"/> to an <see cref="linq::array"/>.
 	/// </summary>

@@ -137,8 +137,8 @@ int main() {
 				VALUE_L [](auto item) { return item.name; }
 			END;
 
-		empDirectory = linq::from(employees, 3).to_map<int>([](auto item) { return item.id; });
-		empNameDirectory = linq::from(employees, 3).to_map<int, std::string>([](auto item)->int { return item.id; }, [](auto item)->string { return item.name; });
+		empDirectory = linq::from(employees, 3).map<int>([](auto item) { return item.id; });
+		empNameDirectory = linq::from(employees, 3).map<int, std::string>([](auto item)->int { return item.id; }, [](auto item)->string { return item.name; });
 
 #if PERFORMANCE_TEST
 		float milliseconds = 0;
