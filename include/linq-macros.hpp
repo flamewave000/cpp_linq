@@ -149,7 +149,10 @@
 /// <example>FROM(nums) LAST_OR_DEFAULT(42) [](auto item) -> bool { return item % 2; }</example>
 #define LAST_OR_DEFAULT_L(defaultValue) END.last_or_default(defaultValue,
 
-#define MAP(key, value) END.map<key,value>
+#define MAP_K(key) END.map<key>
+#define MAP_KV(key, value) END.map<key,value>
+#define GROUPBY_K(key) END.group_by<key>
+#define GROUPBY_KV(key, value) END.group_by<key,value>
 #define KEY ([](auto item)
 #define KEY_L (
 #define VALUE ,[](auto item)

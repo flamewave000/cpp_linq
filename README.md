@@ -179,8 +179,8 @@ The more complex procedure provided by the linq library, joining is performed on
 &#x2714; `bool any()`\
 &#x2714; `bool any(`_`lambda`_`)`\
 &#x2714; `void reverse()`\
-&#x2714; `map<`_`key`_`,`_`type`_`> to_map<`_`key`_`>(`_`lambda`_`)`\
-&#x25a2; `map<`_`key`_`,`_`type`_`> group_by<`_`key`_`>(`_`lambda`_`)`
+&#x2714; `map<`_`key`_`,`_`type`_`> map<`_`key`_`>(`_`lambda`_`)`\
+&#x2714; `map<`_`key`_`,`_`type`_`> group<`_`key`_`>(`_`lambda`_`)`
 
 ### Future Features
 &#x25a2; Simple Website\

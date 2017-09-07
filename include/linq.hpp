@@ -469,7 +469,7 @@ namespace linq {
 		}
 
 		/// <summary>
-		/// Helper method which converts this <see cref="linq::array"/> into a <see cref="std::unordered_map"/> using the
+		/// Helper method which converts this <see cref="linq::linq_vec"/> into a <see cref="std::unordered_map"/> using the
 		/// provided <paramref name="key_selector"/> function to select the key to be used. Value becomes the original object.
 		/// </summary>
 		/// <param name="key_selector">Selector delegate for selecting the key value for each element.</param>
@@ -484,7 +484,7 @@ namespace linq {
 		}
 
 		/// <summary>
-		/// Helper method which converts this <see cref="linq::array"/> into a <see cref="std::unordered_map"/> using the
+		/// Helper method which converts this <see cref="linq::linq_vec"/> into a <see cref="std::unordered_map"/> using the
 		/// provided <paramref name="key_selector"/> function to select the key to be used, and the <paramref name="value_selector"/>
 		/// to select the value.
 		/// </summary>
@@ -500,34 +500,64 @@ namespace linq {
 		}
 
 		/// <summary>
-		/// Helper method which converts this <see cref="linq::array"/> into a <see cref="std::vector"/>.
+		/// Helper method which converts this <see cref="linq::linq_vec"/> into a grouped <see cref="std::unordered_map"/> using the
+		/// provided <paramref name="key_selector"/> function to select the group key to be used.
 		/// </summary>
-		/// <returns><see cref="std::vector"/> containing a copy of the elements of this <see cref="linq::array"/>.</returns>
+		/// <param name="key_selector">Selector delegate for selecting the group key value for each element.</param>
+		/// <returns><see cref="std::unordered_map"/> containing the elements using the selected group keys.</returns>
+		template<class _Key>
+		::std::unordered_map<_Key, ::std::vector<_Ty>> group_by(const selector<_Ty, _Key> &key_selector) const {
+			::std::unordered_map<_Key, ::std::vector<_Ty>> map;
+			for (auto it = this->begin(), end = this->end(); it != end; it++) {
+				map[key_selector(*it)].push_back(*it);
+			}
+			return map;
+		}
+		/// <summary>
+		/// Helper method which converts this <see cref="linq::linq_vec"/> into a grouped <see cref="std::unordered_map"/> using the
+		/// provided <paramref name="key_selector"/> function to select the group key to be used, and the <paramref name="value_selector"/>
+		/// to select the value.
+		/// </summary>
+		/// <param name="key_selector">Selector delegate for selecting the group key value for each element.</param>
+		/// <returns><see cref="std::unordered_map"/> containing the elements using the selected group keys.</returns>
+		template<class _Key, class _Value>
+		::std::unordered_map<_Key, ::std::vector<_Value>> group_by(const selector<_Ty, _Key> &key_selector, const selector<_Ty, _Value> &value_selector) const {
+			::std::unordered_map<_Key, ::std::vector<_Value>> map;
+			for (auto it = this->begin(), end = this->end(); it != end; it++) {
+				map[key_selector(*it)].push_back(value_selector(*it));
+			}
+			return map;
+		}
+
+		/// <summary>
+		/// Helper method which converts this <see cref="linq::linq_vec"/> into a <see cref="std::vector"/>.
+		/// </summary>
+		/// <returns><see cref="std::vector"/> containing a copy of the elements of this <see cref="linq::linq_vec"/>.</returns>
 		inline ::std::vector<_Ty> to_vector() const {
 			return ::std::vector<_Ty>(*this);
 		}
 	};
 
 	/// <summary>
-	/// Helper function for converting a <see cref="std::vector"/> to an <see cref="linq::array"/>.
+	/// Helper function for converting a <see cref="std::vector"/> to an <see cref="linq::linq_vec"/>.
 	/// </summary>
-	/// <param name="vec">The <see cref="std::vector"/> to be converted to a <see cref="linq::array"/>.</param>
-	/// <returns><see cref="linq::array"/> containing a copy of the elements from the provided <paramref name="vec"/>.</returns>
+	/// <param name="vec">The <see cref="std::vector"/> to be converted to a <see cref="linq::linq_vec"/>.</param>
+	/// <returns><see cref="linq::linq_vec"/> containing a copy of the elements from the provided <paramref name="vec"/>.</returns>
 	template<class _Ty>
 	inline linq_vec<_Ty> from(const ::std::initializer_list<_Ty> &ilist) { return linq_vec<_Ty>(vec); }
 	/// <summary>
-	/// Helper function for converting a <see cref="std::vector"/> to an <see cref="linq::array"/>.
+	/// Helper function for converting a <see cref="std::vector"/> to an <see cref="linq::linq_vec"/>.
 	/// </summary>
-	/// <param name="vec">The <see cref="std::vector"/> to be converted to a <see cref="linq::array"/>.</param>
-	/// <returns><see cref="linq::array"/> containing a copy of the elements from the provided <paramref name="vec"/>.</returns>
+	/// <param name="vec">The <see cref="std::vector"/> to be converted to a <see cref="linq::linq_vec"/>.</param>
+	/// <returns><see cref="linq::linq_vec"/> containing a copy of the elements from the provided <paramref name="vec"/>.</returns>
 	template<class _Ty>
 	inline linq_vec<_Ty> from(const ::std::vector<_Ty> &vec) { return linq_vec<_Ty>(vec); }
 	/// <summary>
-	/// Helper function for converting a C-style array pointer into an <see cref="linq::array"/>.
+	/// Helper function for converting a C-style array pointer into an <see cref="linq::linq_vec"/>.
 	/// </summary>
-	/// <param name="c_arr">The pointer to a C-Style array to be converted to a <see cref="linq::array"/>.</param>
+	/// <param name="c_arr">The pointer to a C-Style array to be converted to a <see cref="linq::linq_vec"/>.</param>
 	/// <param name="size">The size of the C-Style array.</param>
-	/// <returns><see cref="linq::array"/> containing a copy of the elements from the provided <paramref name="c_arr"/>.</returns>
+	/// <returns><see cref="linq::linq_vec"/> containing a copy of the elements from the provided <paramref name="c_arr"/>.</returns>
 	template<class _Ty>
 	inline linq_vec<_Ty> from(const _Ty *c_arr, const size_t &size) {
 		return linq_vec<_Ty>(c_arr, c_arr + size);

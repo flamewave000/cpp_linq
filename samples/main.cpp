@@ -124,21 +124,39 @@ int main() {
 			.join<Project>(projects, [](auto left, auto right) -> bool { return left.proj_id == right.id; }) // left/right condition
 			.select<EmployeeProject>([](auto item) ->EmployeeProject { return { { item.left.id, item.left.name }, item.right.name }; });
 
-		// Group the employees by their ID
+		// Map the employees by their ID
 		auto empDirectory = FROM(employees, 3)
-			MAP(int, Employee)
+			MAP_K(int)
 				KEY { return item.id; }
-				VALUE { return item; }
 			END;
-		// Group the employee names by their ID using full lambdas
+		// Map the employee names by their ID using full lambdas
 		auto empNameDirectory = FROM(employees, 3)
-			MAP(int, std::string)
+			MAP_KV(int, std::string)
 				KEY_L [](auto item) { return item.id; }
 				VALUE_L [](auto item) { return item.name; }
 			END;
 
-		empDirectory = linq::from(employees, 3).map<int>([](auto item) { return item.id; });
-		empNameDirectory = linq::from(employees, 3).map<int, std::string>([](auto item)->int { return item.id; }, [](auto item)->string { return item.name; });
+		empDirectory = linq::from(employees, 3)
+			.map<int>([](auto item) { return item.id; });
+		empNameDirectory = linq::from(employees, 3)
+			.map<int, std::string>([](auto item)->int { return item.id; },
+				[](auto item)->string { return item.name; });
+
+		auto empByProj = FROM(employees, 3)
+			GROUPBY_K(int)
+				KEY { return item.proj_id; }
+			END;
+		auto empNameByProj = FROM(employees, 3)
+				GROUPBY_KV(int, std::string)
+				KEY { return item.proj_id; }
+				VALUE { return item.name; }
+			END;
+
+		empByProj = linq::from(employees, 3)
+			.group_by<int>([](auto item) { return item.proj_id; });
+		empNameByProj = linq::from(employees, 3)
+			.group_by<int, std::string>([](auto item) { return item.proj_id; },
+				[](auto item) { return item.name; });
 
 #if PERFORMANCE_TEST
 		float milliseconds = 0;
