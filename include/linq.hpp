@@ -544,7 +544,7 @@ namespace linq {
 	/// <param name="vec">The <see cref="std::vector"/> to be converted to a <see cref="linq::linq_vec"/>.</param>
 	/// <returns><see cref="linq::linq_vec"/> containing a copy of the elements from the provided <paramref name="vec"/>.</returns>
 	template<class _Ty>
-	inline linq_vec<_Ty> from(const ::std::initializer_list<_Ty> &ilist) { return linq_vec<_Ty>(vec); }
+	inline linq_vec<_Ty> from(const ::std::initializer_list<_Ty> &ilist) { return linq_vec<_Ty>(ilist); }
 	/// <summary>
 	/// Helper function for converting a <see cref="std::vector"/> to an <see cref="linq::linq_vec"/>.
 	/// </summary>
