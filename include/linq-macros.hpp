@@ -3,9 +3,9 @@
 #define END )
 
 /// <summary>Used with <see cref="ORDERBY"/> as a predefined ascending sort.</summary>
-#define ASCENDING ::linq::ascending
+#define ASCENDING ::linq::ascending()
 /// <summary>Used with <see cref="ORDERBY"/> as a predefined descending sort.</summary>
-#define DESCENDING ::linq::descending
+#define DESCENDING ::linq::descending()
 
 // ELEM, LEFT, & RIGHT are simple macros to be used where needed for parameter names.
 // This allows for easy name changing without the risk of missing a name.

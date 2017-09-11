@@ -42,7 +42,7 @@ int main() {
 		// Select the even numbers from the list
 		auto evens = FROM(nums, 10) WHERE { return item % 2 == 0; } ORDERBY(DESCENDING) END;
 		// Select the odd numbers from the list
-		auto odds = linq::from(nums, 10).where([](auto item) { return item % 2 == 1; }).orderby(linq::descending);
+		auto odds = linq::from(nums, 10).where([](auto item) { return item % 2 == 1; }).orderby(linq::descending());
 		// Change the data to a new type
 		auto even_descs = FROM(evens) SELECT(description) { return { item, "even" }; } END;
 		auto odd_descs = FROM(odds) SELECT(description) { return { item, "odd" }; } END;

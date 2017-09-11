@@ -133,6 +133,7 @@ namespace linq {
 	/// <summary>predicate used for sorting objects in descending order</summary>
 	constexpr core::more<> descending() { return core::more<>(); }
 
+
 	/// <summary>
 	/// Extension to the standard std::vector class. Provides specialized query methods for processing lists.
 	/// </summary>
@@ -176,8 +177,8 @@ namespace linq {
 		/// <summary>
 		/// Delegate for comparing two items and returning a bool result.
 		/// </summary>
-		template<class _Ty2>
-		using comparison = ::std::function<bool(const _Ty&, const _Ty2&)>;
+		template<class _Ty1, class _Ty2>
+		using comparison = ::std::function<bool(const _Ty1&, const _Ty2&)>;
 		/// <summary>
 		/// Delegate that is expected to merge two items into a new item which is then returned by the call.
 		/// </summary>
@@ -244,8 +245,8 @@ namespace linq {
 		/// <param name="pred">Predicate used to determine if the left element should go before the right.</param>
 		/// <typeparam name="_Pr">The type of the predicate object, method or lambda</typeparam>
 		/// <returns>A reference to this list (used for chaining calls).</returns>
-		template<class _Pr>
-		inline linq_vec<_Ty>& orderby(const _Pr &pred) {
+		template<class _Pred>
+		inline linq_vec<_Ty>& orderby(const _Pred &pred) {
 			::std::sort(this->begin(), this->end(), pred);
 			return *this;
 		}
@@ -260,7 +261,7 @@ namespace linq {
 		/// <typeparam name="_Ret">The type to be returned in the new merged array.</typeparam>
 		/// <returns>New array of merged items.</returns>
 		template<class _Ty2, class _Ret>
-		linq_vec<_Ret> join(const linq_vec<_Ty2> &arr, const merger<_Ty2, _Ret> &merge, const comparison<_Ty2> &on) const {
+		linq_vec<_Ret> join(const linq_vec<_Ty2> &arr, const merger<_Ty2, _Ret> &merge, const comparison<_Ty, _Ty2> &on) const {
 			linq_vec<_Ret> merged;
 			for (auto first : *this) {
 				for (auto second : arr) {
@@ -279,7 +280,7 @@ namespace linq {
 		/// <typeparam name="_Ty2">The type contained in the array being joined.</typeparam>
 		/// <returns>New array of paired items.</returns>
 		template<class _Ty2>
-		inline linq_vec<core::merge_pair<_Ty, _Ty2>> join(const linq_vec<_Ty2> &arr, const comparison<_Ty2> &on) const {
+		inline linq_vec<core::merge_pair<_Ty, _Ty2>> join(const linq_vec<_Ty2> &arr, const comparison<_Ty, _Ty2> &on) const {
 			return join<_Ty2, core::merge_pair<_Ty, _Ty2>>(arr, [](auto left, auto right)->core::merge_pair<_Ty, _Ty2> { return { left, right }; }, on);
 		}
 
@@ -400,7 +401,7 @@ namespace linq {
 		/// </summary>
 		/// <param name="value_selector">Used to select the value for the given element</param>
 		/// <returns>The smallest value found.</returns>
-		inline _Ty min() const { return comp_select<_Ty>([](_Ty x) { return x; }, ::linq::ascending); }
+		inline _Ty min() const { return comp_select<_Ty>([](_Ty x) { return x; }, ::linq::ascending()); }
 		/// <summary>
 		/// Calculates the minimum of the selected values.
 		/// </summary>
@@ -408,13 +409,13 @@ namespace linq {
 		/// <typeparam name="_Ret">Value type to be compared for the smallest.</typeparam>
 		/// <returns>The smallest value found.</returns>
 		template<class _Ret>
-		inline _Ret min(const selector<_Ty, _Ret> &value_selector) const { return comp_select(value_selector, ::linq::ascending); }
+		inline _Ret min(const selector<_Ty, _Ret> &value_selector) const { return comp_select(value_selector, ::linq::ascending()); }
 		/// <summary>
 		/// Calculates the minimum of the selected values.
 		/// </summary>
 		/// <param name="value_selector">Used to select the value for the given element</param>
 		/// <returns>The smallest value found.</returns>
-		inline _Ty max() const { return comp_select<_Ty>([](_Ty x) { return x; }, ::linq::descending); }
+		inline _Ty max() const { return comp_select<_Ty>([](_Ty x) { return x; }, ::linq::descending()); }
 		/// <summary>
 		/// Calculates the maximum of the selected values.
 		/// </summary>
@@ -422,7 +423,7 @@ namespace linq {
 		/// <typeparam name="_Ret">Value type to be compared for the largest.</typeparam>
 		/// <returns>The largest value found.</returns>
 		template<class _Ret>
-		inline _Ret max(const selector<_Ty, _Ret> &value_selector) const { return comp_select(value_selector, ::linq::descending); }
+		inline _Ret max(const selector<_Ty, _Ret> &value_selector) const { return comp_select(value_selector, ::linq::descending()); }
 		/// <summary>
 		/// Select values to be compared. The value selected most is returned.
 		/// </summary>
@@ -431,7 +432,7 @@ namespace linq {
 		/// <typeparam name="_Ret">Value being compared and returned.</typeparam>
 		/// <typeparam name="_Pred">Predicate to perform a comparison between the left and right arguments. Returns true if left is selected over the right.</typeparam>
 		/// <returns>Value that is selected above all others.</returns>
-		template<class _Ret, typename _Pred>
+		template<class _Ret, class _Pred>
 		_Ret comp_select(const selector<_Ty, _Ret> & value_selector, const _Pred &pred) const {
 			_Ret result, tmp;
 			memset(&result, 0, sizeof(_Ret));
