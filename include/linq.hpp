@@ -129,9 +129,9 @@ namespace linq {
 	}
 
 	/// <summary>predicate used for sorting objects in ascending order</summary>
-	core::less<> ascending;
+	constexpr core::less<> ascending() { return core::less<>(); }
 	/// <summary>predicate used for sorting objects in descending order</summary>
-	core::more<> descending;
+	constexpr core::more<> descending() { return core::more<>(); }
 
 	/// <summary>
 	/// Extension to the standard std::vector class. Provides specialized query methods for processing lists.
@@ -231,13 +231,8 @@ namespace linq {
 			linq_vec<_Ty> result(keep.size());
 			// We will now take each element we are keeping and move them into sequential
 			// order at the begining of our original list
-			for (::std::size_t c = 0, last = 0, l = keep.size(); c < l; c++) {
-				if (keep[c] != last) {
-					// swap elements
-					const _Ty &right = (*this)[keep[c]];
-					result[c] = ::std::move(right);
-				}
-				last++;
+			for (::std::size_t c = 0, l = keep.size(); c < l; c++) {
+				result[c] = this->operator[](keep[c]);
 			}
 			// trim the tail off of our original array
 			return result;
@@ -544,7 +539,7 @@ namespace linq {
 	/// <param name="vec">The <see cref="std::vector"/> to be converted to a <see cref="linq::linq_vec"/>.</param>
 	/// <returns><see cref="linq::linq_vec"/> containing a copy of the elements from the provided <paramref name="vec"/>.</returns>
 	template<class _Ty>
-	inline linq_vec<_Ty> from(const ::std::initializer_list<_Ty> &ilist) { return linq_vec<_Ty>(vec); }
+	inline linq_vec<_Ty> from(const ::std::initializer_list<_Ty> &ilist) { return linq_vec<_Ty>(ilist); }
 	/// <summary>
 	/// Helper function for converting a <see cref="std::vector"/> to an <see cref="linq::linq_vec"/>.
 	/// </summary>

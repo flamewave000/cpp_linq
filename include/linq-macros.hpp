@@ -20,7 +20,7 @@
 
 /// <summary>Performs a conditional for filtering the list.</summary>
 /// <example>WHERE { return item > 10; }</example>
-#define WHERE END.where([](auto __LINQ_ELEM__) -> bool
+#define WHERE END.where([&](auto __LINQ_ELEM__) -> bool
 
 /// <summary>Performs a sort on the list. Can be given the predefined ASCENDING or DESCENDING for comparable types, or any predicate.</summary>
 /// <param name="pred">Predicate used for comparing the two items for which should go first.</param>
@@ -73,7 +73,7 @@
 /// </summary>
 /// <param name="defaultValue">Default value to be returned if no items satisfy the condition.</param>
 /// <example>FROM(nums) FIRST_OR_DEFAULT(42) { return item % 2; }</example>
-#define FIRST_OR_DEFAULT(defaultValue) END.first_or_default(defaultValue, [](auto item) -> bool
+#define FIRST_OR_DEFAULT(defaultValue) END.first_or_default(defaultValue, [&](auto item) -> bool
 
 /// <summary>
 /// Searches the array for the last item which satisfies the provided condition.
