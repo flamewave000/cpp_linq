@@ -210,7 +210,7 @@ namespace linq {
 		inline linq_vec<_Ret> select(const conversion<_Ret> &selector) const {
 			linq_vec<_Ret> result(this->size());
 			select(selector, result);
-			return result;
+			return ::std::move(result);
 		}
 
 		/// <summary>
@@ -236,7 +236,7 @@ namespace linq {
 				result[c] = this->operator[](keep[c]);
 			}
 			// trim the tail off of our original array
-			return result;
+			return ::std::move(result);
 		}
 
 		/// <summary>
@@ -270,7 +270,7 @@ namespace linq {
 					}
 				}
 			}
-			return merged;
+			return ::std::move(merged);
 		}
 		/// <summary>
 		/// Performs a join on the current list and the provided list and pairs the items into <see cref="linq::core::merge_pair"/>.
@@ -464,19 +464,64 @@ namespace linq {
 			return *this;
 		}
 
+	  private:
+		template <typename _Kty, typename _Ty2>
+		using allocator = ::std::allocator<::std::pair<const _Kty, _Ty2>>;
+
+	  public:
+		/// <summary>
+		/// Helper method which converts this <see cref="linq::linq_vec"/> into a <see cref="std::unordered_set"/> using the
+		/// elements as keys.
+		/// </summary>
+		/// <returns><see cref="std::unordered_set"/> containing the unique elements.</returns>
+		template <typename _Hasher = ::std::hash<_Ty>,
+				  typename _Keyeq = ::std::equal_to<_Ty>,
+				  typename _Alloc = ::std::allocator<_Ty>>
+		::std::unordered_set<_Ty, _Hasher, _Keyeq, _Alloc> unique() const
+		{
+			::std::unordered_set<_Ty, _Hasher, _Keyeq> set;
+			for (auto it = this->begin(), end = this->end(); it != end; it++) {
+				set.insert(*it);
+			}
+			return ::std::move(set);
+		}
+
+		/// <summary>
+		/// Helper method which converts this <see cref="linq::linq_vec"/> into a <see cref="std::unordered_set"/> using the
+		/// provided <paramref name="key_selector"/> function to select the key to be used.
+		/// </summary>
+		/// <param name="key_selector">Selector delegate for selecting the key value for each element.</param>
+		/// <returns><see cref="std::unordered_set"/> containing the selected keys.</returns>
+		template <typename _Kty,
+				  typename _Hasher = ::std::hash<_Kty>,
+				  typename _Keyeq = ::std::equal_to<_Kty>,
+				  typename _Alloc = ::std::allocator<_Kty>>
+		::std::unordered_set<_Kty, _Hasher, _Keyeq, _Alloc> unique(const selector<_Ty, _Kty> &key_selector) const
+		{
+			::std::unordered_set<_Kty, _Hasher, _Keyeq> set;
+			for (auto it = this->begin(), end = this->end(); it != end; it++) {
+				set.insert(key_selector(*it));
+			}
+			return ::std::move(set);
+		}
+
 		/// <summary>
 		/// Helper method which converts this <see cref="linq::linq_vec"/> into a <see cref="std::unordered_map"/> using the
 		/// provided <paramref name="key_selector"/> function to select the key to be used. Value becomes the original object.
 		/// </summary>
 		/// <param name="key_selector">Selector delegate for selecting the key value for each element.</param>
 		/// <returns><see cref="std::unordered_map"/> containing the elements using the selected keys.</returns>
-		template<class _Key>
-		::std::unordered_map<_Key, _Ty> map(const selector<_Ty, _Key> &key_selector) const {
-			::std::unordered_map<_Key, _Ty> map;
+		template <typename _Kty,
+				  typename _Hasher = ::std::hash<_Kty>,
+				  typename _Keyeq = ::std::equal_to<_Kty>,
+				  typename _Alloc = allocator<_Kty, _Ty>>
+		::std::unordered_map<_Kty, _Ty, _Hasher, _Keyeq> map(const selector<_Ty, _Kty> &key_selector) const
+		{
+			::std::unordered_map<_Kty, _Ty, _Hasher, _Keyeq> map;
 			for (auto it = this->begin(), end = this->end(); it != end; it++) {
 				map[key_selector(*it)] = *it;
 			}
-			return map;
+			return ::std::move(map);
 		}
 
 		/// <summary>
@@ -486,13 +531,17 @@ namespace linq {
 		/// </summary>
 		/// <param name="key_selector">Selector delegate for selecting the key value for each element.</param>
 		/// <returns><see cref="std::unordered_map"/> containing the elements using the selected keys.</returns>
-		template<class _Key, class _Value>
-		::std::unordered_map<_Key, _Value> map(const selector<_Ty, _Key> &key_selector, const selector<_Ty, _Value> &value_selector) const {
-			::std::unordered_map<_Key, _Value> map;
+		template <class _Kty,
+				  class _Ty2,
+				  class _Hasher = ::std::hash<_Kty>,
+				  class _Keyeq = ::std::equal_to<_Kty>,
+				  class _Alloc = allocator<_Kty, _Ty2>>
+		::std::unordered_map<_Kty, _Ty2, _Hasher, _Keyeq, _Alloc> map(const selector<_Ty, _Kty> &key_selector, const selector<_Ty, _Ty2> &value_selector) const {
+			::std::unordered_map<_Kty, _Ty2, _Hasher, _Keyeq, _Alloc> map;
 			for (auto it = this->begin(), end = this->end(); it != end; it++) {
 				map[key_selector(*it)] = value_selector(*it);
 			}
-			return map;
+			return ::std::move(map);
 		}
 
 		/// <summary>
@@ -501,13 +550,16 @@ namespace linq {
 		/// </summary>
 		/// <param name="key_selector">Selector delegate for selecting the group key value for each element.</param>
 		/// <returns><see cref="std::unordered_map"/> containing the elements using the selected group keys.</returns>
-		template<class _Key>
-		::std::unordered_map<_Key, ::std::vector<_Ty>> group_by(const selector<_Ty, _Key> &key_selector) const {
-			::std::unordered_map<_Key, ::std::vector<_Ty>> map;
+		template <class _Kty,
+				  class _Hasher = ::std::hash<_Kty>,
+				  class _Keyeq = ::std::equal_to<_Kty>,
+				  class _Alloc = allocator<_Kty, _Ty>>
+		::std::unordered_map<_Kty, ::std::vector<_Ty>, _Hasher, _Keyeq, _Alloc> group_by(const selector<_Ty, _Kty> &key_selector) const {
+			::std::unordered_map<_Kty, ::std::vector<_Ty>, _Hasher, _Keyeq, _Alloc> map;
 			for (auto it = this->begin(), end = this->end(); it != end; it++) {
 				map[key_selector(*it)].push_back(*it);
 			}
-			return map;
+			return ::std::move(map);
 		}
 		/// <summary>
 		/// Helper method which converts this <see cref="linq::linq_vec"/> into a grouped <see cref="std::unordered_map"/> using the
@@ -516,13 +568,17 @@ namespace linq {
 		/// </summary>
 		/// <param name="key_selector">Selector delegate for selecting the group key value for each element.</param>
 		/// <returns><see cref="std::unordered_map"/> containing the elements using the selected group keys.</returns>
-		template<class _Key, class _Value>
-		::std::unordered_map<_Key, ::std::vector<_Value>> group_by(const selector<_Ty, _Key> &key_selector, const selector<_Ty, _Value> &value_selector) const {
-			::std::unordered_map<_Key, ::std::vector<_Value>> map;
+		template <class _Kty,
+				  class _Ty2,
+				  class _Hasher = ::std::hash<_Kty>,
+				  class _Keyeq = ::std::equal_to<_Kty>,
+				  class _Alloc = allocator<_Kty, _Ty2>>
+		::std::unordered_map<_Kty, ::std::vector<_Ty2>, _Hasher, _Keyeq, _Alloc> group_by(const selector<_Ty, _Kty> &key_selector, const selector<_Ty, _Ty2> &value_selector) const {
+			::std::unordered_map<_Kty, ::std::vector<_Ty2>, _Hasher, _Keyeq, _Alloc> map;
 			for (auto it = this->begin(), end = this->end(); it != end; it++) {
 				map[key_selector(*it)].push_back(value_selector(*it));
 			}
-			return map;
+			return ::std::move(map);
 		}
 
 		/// <summary>
@@ -530,7 +586,7 @@ namespace linq {
 		/// </summary>
 		/// <returns><see cref="std::vector"/> containing a copy of the elements of this <see cref="linq::linq_vec"/>.</returns>
 		inline ::std::vector<_Ty> to_vector() const {
-			return ::std::vector<_Ty>(*this);
+			return ::std::move(::std::vector<_Ty>(*this));
 		}
 	};
 
@@ -555,9 +611,7 @@ namespace linq {
 	/// <param name="size">The size of the C-Style array.</param>
 	/// <returns><see cref="linq::linq_vec"/> containing a copy of the elements from the provided <paramref name="c_arr"/>.</returns>
 	template<class _Ty>
-	inline linq_vec<_Ty> from(const _Ty *c_arr, const size_t &size) {
-		return linq_vec<_Ty>(c_arr, c_arr + size);
-	}
+	inline linq_vec<_Ty> from(const _Ty *c_arr, const size_t &size) { return linq_vec<_Ty>(c_arr, c_arr + size); }
 }
 
 
