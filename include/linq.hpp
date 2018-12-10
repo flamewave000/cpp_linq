@@ -149,7 +149,7 @@ namespace linq {
 		linq_vec(::std::initializer_list<_Ty> _Ilist) : vector(_Ilist) {}
 		template<class _Iter, class = ::std::enable_if_t<::std::_Is_iterator<_Iter>::value>>
 		linq_vec(_Iter _First, _Iter _Last) : vector(_First, _Last) {}
-#elif _STL_VECTOR_H
+#elif defined _STL_VECTOR_H
 		linq_vec() : ::std::vector<_Ty>() {}
 		linq_vec(::std::size_t __n) : ::std::vector<_Ty>(__n) {}
 		linq_vec(const ::std::vector<_Ty>&__x) : ::std::vector<_Ty>(__x) {}
@@ -157,6 +157,12 @@ namespace linq {
 		linq_vec(::std::initializer_list<_Ty> __l) : ::std::vector<_Ty>(__l) {}
 		template<typename _InputIterator, typename = std::_RequireInputIter<_InputIterator>>
 		linq_vec(_InputIterator __first, _InputIterator __last) : ::std::vector<_Ty>(__first, __last) {}
+#elif defined _LIBCPP_VECTOR
+		linq_vec() : ::std::vector<_Ty>() {}
+		linq_vec(::std::size_t __n) : ::std::vector<_Ty>(__n) {}
+		linq_vec(const ::std::vector<_Ty>&__x) : ::std::vector<_Ty>(__x) {}
+		linq_vec(::std::vector<_Ty>&& __x) : ::std::vector<_Ty>(__x) {}
+		linq_vec(::std::initializer_list<_Ty> __l) : ::std::vector<_Ty>(__l) {}
 #endif
 
 	public:
@@ -327,7 +333,7 @@ namespace linq {
 		/// <returns>The last element of the array; otherwise an error is thrown.</returns>
 		_Ty last() const {
 			size_t pos = this->size() - 1;
-			if (pos >= 0) {
+			if (pos) {
 				return this->at(pos);
 			}
 			throw ::std::logic_error("array is empty");
